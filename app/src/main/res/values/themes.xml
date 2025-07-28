@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.TZD" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Використовуємо тему з бібліотеки AppCompat, щоб уникнути помилки "You need to use a Theme.AppCompat theme" -->
+    <style name="Theme.TZD" parent="Theme.AppCompat.Light.NoActionBar" />
 </resources>
