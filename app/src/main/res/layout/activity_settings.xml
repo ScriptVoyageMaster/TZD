@@ -1,0 +1,58 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Штрихкод -->
+        <TextView android:text="Код товару:" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <EditText android:id="@+id/inputCodeStart" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Початок"/>
+        <EditText android:id="@+id/inputCodeLength" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Довжина"/>
+
+        <TextView android:text="Вага (кг):" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp"/>
+        <EditText android:id="@+id/inputWeightKgStart" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Початок"/>
+        <EditText android:id="@+id/inputWeightKgLength" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Довжина"/>
+
+        <TextView android:text="Вага (г):" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp"/>
+        <EditText android:id="@+id/inputWeightGrStart" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Початок"/>
+        <EditText android:id="@+id/inputWeightGrLength" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Довжина"/>
+
+        <TextView android:text="Кількість упаковок:" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp"/>
+        <EditText android:id="@+id/inputCountStart" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Початок"/>
+        <EditText android:id="@+id/inputCountLength" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Довжина"/>
+
+        <TextView android:text="Затримка після сканування (мс):" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp"/>
+        <EditText android:id="@+id/inputDelay" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="2000"/>
+
+        <!-- FTP -->
+        <TextView android:text="FTP сервер:" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="24dp"/>
+        <EditText android:id="@+id/inputFtpHost" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="ftp.example.com"/>
+
+        <TextView android:text="FTP порт:" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <EditText android:id="@+id/inputFtpPort" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="21"/>
+
+        <TextView android:text="FTP логін:" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <EditText android:id="@+id/inputFtpUser" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+        <TextView android:text="FTP пароль:" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <EditText android:id="@+id/inputFtpPass" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textPassword"/>
+
+        <Button
+            android:id="@+id/btnTestFtp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Перевірити FTP"
+            android:layout_marginTop="16dp" />
+
+        <Button
+            android:id="@+id/btnSaveSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Зберегти"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
+</ScrollView>

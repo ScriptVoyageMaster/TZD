@@ -1,5 +1,6 @@
 package ua.company.tzd
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 // AppCompatActivity міститься у бібліотеці appcompat, яка додає підтримку
@@ -30,11 +31,10 @@ class MainActivity : AppCompatActivity() {
             // startActivity(Intent(this, SentActivity::class.java))
         }
 
-        // Кнопка "Налаштування" відкриватиме екран з налаштуваннями програми
-        // Обробник натискання поки що містить лише TODO
+        // Кнопка "Налаштування" відкриває екран SettingsActivity
         findViewById<Button>(R.id.btnSettings).setOnClickListener {
-            // TODO: реалізувати перехід на SettingsActivity
-            // startActivity(Intent(this, SettingsActivity::class.java))
+            // Запускаємо активність налаштувань через Intent
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
     }
 }
