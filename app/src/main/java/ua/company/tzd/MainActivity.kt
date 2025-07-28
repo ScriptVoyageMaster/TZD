@@ -1,47 +1,35 @@
 package ua.company.tzd
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import ua.company.tzd.ui.theme.TZDTheme
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity : ComponentActivity() {
+/**
+ * Головна активність застосунку.
+ * Тут розміщені кнопки для переходу до інших розділів.
+ */
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            TZDTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+        // Підключаємо файл розмітки activity_main.xml як вигляд для цієї активності
+        setContentView(R.layout.activity_main)
+
+        // Знаходимо кнопку за її ідентифікатором і додаємо обробник натиску
+        findViewById<Button>(R.id.btnOrders).setOnClickListener {
+            // TODO: коли буде створено екран замовлень, тут відкрити його через Intent
+            // startActivity(Intent(this, OrdersActivity::class.java))
         }
-    }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+        // Обробник для переходу до списку відправлених документів
+        findViewById<Button>(R.id.btnSent).setOnClickListener {
+            // TODO: реалізувати відкриття відповідної активності
+            // startActivity(Intent(this, SentActivity::class.java))
+        }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TZDTheme {
-        Greeting("Android")
+        // Кнопка налаштувань відкриватиме екран налаштувань програми
+        findViewById<Button>(R.id.btnSettings).setOnClickListener {
+            // TODO: реалізувати перехід на SettingsActivity
+            // startActivity(Intent(this, SettingsActivity::class.java))
+        }
     }
 }
