@@ -116,9 +116,16 @@ class SettingsActivity : AppCompatActivity() {
                     ftpClient.logout()
                     ftpClient.disconnect()
                 } catch (e: Exception) {
+                    // Виводимо текст помилки у Logcat, щоб розробник міг побачити деталі
+                    e.printStackTrace()
                     // У разі помилки також показуємо повідомлення на головному потоці
+                    // з точним типом винятку та його повідомленням
                     runOnUiThread {
-                        Toast.makeText(this@SettingsActivity, "❌ Помилка з'єднання: ${'$'}{e.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            this@SettingsActivity,
+                            "❌ Помилка: " + e.javaClass.name + " - " + e.message,
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
             }
