@@ -57,4 +57,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    // Бібліотека для роботи з FTP (Apache Commons Net)
+    implementation("commons-net:commons-net:3.9.0")
 }

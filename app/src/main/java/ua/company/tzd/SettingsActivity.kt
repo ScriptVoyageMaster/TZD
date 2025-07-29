@@ -9,8 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.net.InetSocketAddress
-import java.net.Socket
+import org.apache.commons.net.ftp.FTPClient
 
 /**
  * Екран налаштувань програми.
@@ -87,21 +86,39 @@ class SettingsActivity : AppCompatActivity() {
             Toast.makeText(this, "Налаштування збережено", Toast.LENGTH_SHORT).show()
         }
 
-        // Перевіряємо доступність FTP-серверу
+        // Перевіряємо з'єднання з FTP-сервером
         btnTestFtp.setOnClickListener {
-            val host = ftpHost.text.toString()
-            val port = ftpPort.text.toString().toInt()
+            // Зчитуємо дані з полів і підставляємо типові значення, якщо щось не введено
+            val host = ftpHost.text.toString().trim()
+            val port = ftpPort.text.toString().toIntOrNull() ?: 21
+            val user = ftpUser.text.toString().trim()
+            val pass = ftpPass.text.toString().trim()
+
+            // Створюємо корутину в IO-потоці, щоб не блокувати UI
             CoroutineScope(Dispatchers.IO).launch {
+                // Клієнт для роботи з FTP
+                val ftpClient = FTPClient()
                 try {
-                    Socket().use { socket ->
-                        socket.connect(InetSocketAddress(host, port), 3000)
-                        runOnUiThread {
-                            Toast.makeText(this@SettingsActivity, "FTP-доступ успішний", Toast.LENGTH_SHORT).show()
+                    // Підключаємось до сервера за вказаними параметрами
+                    ftpClient.connect(host, port)
+                    // Пробуємо виконати вхід
+                    val success = ftpClient.login(user, pass)
+
+                    // Перемикаємось на головний потік щоб показати повідомлення
+                    runOnUiThread {
+                        if (success) {
+                            Toast.makeText(this@SettingsActivity, "✅ FTP вхід успішний", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(this@SettingsActivity, "❌ Логін або пароль невірний", Toast.LENGTH_LONG).show()
                         }
                     }
+                    // Закриваємо сесію
+                    ftpClient.logout()
+                    ftpClient.disconnect()
                 } catch (e: Exception) {
+                    // У разі помилки також показуємо повідомлення на головному потоці
                     runOnUiThread {
-                        Toast.makeText(this@SettingsActivity, "Помилка з'єднання з FTP", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@SettingsActivity, "❌ Помилка з'єднання: ${'$'}{e.message}", Toast.LENGTH_LONG).show()
                     }
                 }
             }
