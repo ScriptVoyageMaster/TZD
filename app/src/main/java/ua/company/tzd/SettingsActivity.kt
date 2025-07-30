@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
 import kotlinx.coroutines.*
 import org.apache.commons.net.ftp.FTPClient
 
@@ -111,19 +112,29 @@ class SettingsActivity : AppCompatActivity() {
 
                         // Повертаємося на головний потік для відображення результату
                         runOnUiThread {
-                            val msg = StringBuilder("✅ З'єднання успішне\n")
-                            if (importExists) {
-                                msg.append("📂 Папка імпорту існує\n")
-                            } else {
-                                msg.append("❌ Папку імпорту не знайдено\n")
-                            }
-                            if (exportExists) {
-                                msg.append("📂 Папка експорту існує")
-                            } else {
-                                msg.append("❌ Папку експорту не знайдено")
-                            }
+                            // Формуємо докладне повідомлення про результати перевірки
+                            val statusMessage = StringBuilder()
+                                .append("✅ З'єднання успішне\n\n")
+                                .apply {
+                                    if (importExists) {
+                                        append("📂 Папка імпорту існує\n")
+                                    } else {
+                                        append("❌ Папку імпорту не знайдено\n")
+                                    }
 
-                            Toast.makeText(this@SettingsActivity, msg.toString(), Toast.LENGTH_LONG).show()
+                                    if (exportExists) {
+                                        append("📂 Папка експорту існує\n")
+                                    } else {
+                                        append("❌ Папку експорту не знайдено\n")
+                                    }
+                                }
+
+                            // Показуємо результат у спливаючому діалоговому вікні
+                            AlertDialog.Builder(this@SettingsActivity)
+                                .setTitle("Результат перевірки FTP")
+                                .setMessage(statusMessage.toString())
+                                .setPositiveButton("ОК", null)
+                                .show()
                         }
                     } else {
                         // Логін або пароль невірні
