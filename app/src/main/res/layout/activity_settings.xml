@@ -41,6 +41,20 @@
         <TextView android:text="FTP пароль:" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
         <EditText android:id="@+id/inputFtpPass" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textPassword"/>
 
+        <!-- Каталог для імпорту файлів на сервері -->
+        <EditText
+            android:id="@+id/inputFtpImportDir"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Каталог імпорту" />
+
+        <!-- Каталог для експорту файлів на сервері -->
+        <EditText
+            android:id="@+id/inputFtpExportDir"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Каталог експорту" />
+
         <Button
             android:id="@+id/btnTestFtp"
             android:layout_width="match_parent"

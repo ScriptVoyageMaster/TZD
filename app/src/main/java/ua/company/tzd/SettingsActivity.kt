@@ -2,13 +2,9 @@ package ua.company.tzd
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.apache.commons.net.ftp.FTPClient
 
 /**
@@ -45,6 +41,9 @@ class SettingsActivity : AppCompatActivity() {
         val ftpPort = findViewById<EditText>(R.id.inputFtpPort)
         val ftpUser = findViewById<EditText>(R.id.inputFtpUser)
         val ftpPass = findViewById<EditText>(R.id.inputFtpPass)
+        // Нові поля з папками імпорту та експорту на FTP-сервері
+        val ftpImportDir = findViewById<EditText>(R.id.inputFtpImportDir)
+        val ftpExportDir = findViewById<EditText>(R.id.inputFtpExportDir)
 
         val btnSave = findViewById<Button>(R.id.btnSaveSettings)
         val btnTestFtp = findViewById<Button>(R.id.btnTestFtp)
@@ -86,46 +85,61 @@ class SettingsActivity : AppCompatActivity() {
             Toast.makeText(this, "Налаштування збережено", Toast.LENGTH_SHORT).show()
         }
 
-        // Перевіряємо з'єднання з FTP-сервером
+        // Перевіряємо з'єднання з FTP-сервером та наявність каталогів
         btnTestFtp.setOnClickListener {
-            // Зчитуємо дані з полів і підставляємо типові значення, якщо щось не введено
+            // Зчитуємо дані з полів. Якщо порт не введено, використаємо 21
             val host = ftpHost.text.toString().trim()
             val port = ftpPort.text.toString().toIntOrNull() ?: 21
             val user = ftpUser.text.toString().trim()
             val pass = ftpPass.text.toString().trim()
+            val importDir = ftpImportDir.text.toString().trim()
+            val exportDir = ftpExportDir.text.toString().trim()
 
-            // Створюємо корутину в IO-потоці, щоб не блокувати UI
+            // Запускаємо корутину в IO-потоці для роботи з мережею
             CoroutineScope(Dispatchers.IO).launch {
-                // Клієнт для роботи з FTP
                 val ftpClient = FTPClient()
                 try {
-                    // Підключаємось до сервера за вказаними параметрами
+                    // Підключення до FTP-сервера
                     ftpClient.connect(host, port)
-                    // Пробуємо виконати вхід
+                    // Спроба авторизації
                     val success = ftpClient.login(user, pass)
 
-                    // Перемикаємось на головний потік щоб показати повідомлення
-                    runOnUiThread {
-                        if (success) {
-                            Toast.makeText(this@SettingsActivity, "✅ FTP вхід успішний", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(this@SettingsActivity, "❌ Логін або пароль невірний", Toast.LENGTH_LONG).show()
+                    if (success) {
+                        // Перевіряємо існування вказаних каталогів
+                        val importExists = ftpClient.changeWorkingDirectory(importDir)
+                        val exportExists = ftpClient.changeWorkingDirectory(exportDir)
+
+                        // Повертаємося на головний потік для відображення результату
+                        runOnUiThread {
+                            val msg = StringBuilder("✅ З'єднання успішне\n")
+                            if (importExists) {
+                                msg.append("📂 Папка імпорту існує\n")
+                            } else {
+                                msg.append("❌ Папку імпорту не знайдено\n")
+                            }
+                            if (exportExists) {
+                                msg.append("📂 Папка експорту існує")
+                            } else {
+                                msg.append("❌ Папку експорту не знайдено")
+                            }
+
+                            Toast.makeText(this@SettingsActivity, msg.toString(), Toast.LENGTH_LONG).show()
+                        }
+                    } else {
+                        // Логін або пароль невірні
+                        runOnUiThread {
+                            Toast.makeText(this@SettingsActivity, "❌ Невірний логін або пароль", Toast.LENGTH_LONG).show()
                         }
                     }
-                    // Закриваємо сесію
+
                     ftpClient.logout()
                     ftpClient.disconnect()
+
                 } catch (e: Exception) {
-                    // Виводимо текст помилки у Logcat, щоб розробник міг побачити деталі
+                    // Випадок, коли не вдалося з'єднатися або виникла інша помилка
                     e.printStackTrace()
-                    // У разі помилки також показуємо повідомлення на головному потоці
-                    // з точним типом винятку та його повідомленням
                     runOnUiThread {
-                        Toast.makeText(
-                            this@SettingsActivity,
-                            "❌ Помилка: " + e.javaClass.name + " - " + e.message,
-                            Toast.LENGTH_LONG
-                        ).show()
+                        Toast.makeText(this@SettingsActivity, "❌ Помилка: " + e.message, Toast.LENGTH_LONG).show()
                     }
                 }
             }
