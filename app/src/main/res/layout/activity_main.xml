@@ -11,6 +11,7 @@
     <!-- Кнопка для відкриття списку замовлень -->
     <Button
         android:id="@+id/btnOrders"
+        style="@style/CustomButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Замовлення" />
@@ -18,6 +19,7 @@
     <!-- Кнопка для перегляду відправлених позицій -->
     <Button
         android:id="@+id/btnSent"
+        style="@style/CustomButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Відправлені"
@@ -26,6 +28,7 @@
     <!-- Кнопка для переходу в налаштування програми -->
     <Button
         android:id="@+id/btnSettings"
+        style="@style/CustomButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Налаштування"
@@ -34,6 +37,7 @@
     <!-- Кнопка для перегляду списку товарів -->
     <Button
         android:id="@+id/btnProducts"
+        style="@style/CustomButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Товари"

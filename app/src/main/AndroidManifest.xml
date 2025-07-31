@@ -16,6 +16,8 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.TZD">
         <activity android:name=".SettingsActivity" />
+        <activity android:name=".ui.orders.DriversActivity" />
+        <activity android:name=".ui.orders.OrdersActivity" />
         <!-- Активність зі списком товарів -->
         <activity android:name=".ProductListActivity" />
         <activity

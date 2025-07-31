@@ -44,8 +44,8 @@ class MainActivity : AppCompatActivity() {
 
         // Додаємо обробники натискань
         btnOrders.setOnClickListener {
-            // TODO: коли буде створено екран замовлень, тут відкрити його через Intent
-            // startActivity(Intent(this, OrdersActivity::class.java))
+            // Відкриваємо екран зі списком водіїв та їх замовлень
+            startActivity(Intent(this, ua.company.tzd.ui.orders.DriversActivity::class.java))
         }
 
         // Аналогічно отримуємо кнопку відправлених документів
