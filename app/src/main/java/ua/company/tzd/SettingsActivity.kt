@@ -46,8 +46,16 @@ class SettingsActivity : AppCompatActivity() {
         val ftpImportDir = findViewById<EditText>(R.id.inputFtpImportDir)
         val ftpExportDir = findViewById<EditText>(R.id.inputFtpExportDir)
 
+        // Поле масштабу шрифту інтерфейсу
+        val inputFontScale = findViewById<EditText>(R.id.inputFontScale)
+
         val btnSave = findViewById<Button>(R.id.btnSaveSettings)
         val btnTestFtp = findViewById<Button>(R.id.btnTestFtp)
+
+        // Зчитуємо масштаб шрифту та застосовуємо до кнопок
+        val scale = prefs.getInt("ui_font_scale", 100) / 100.0f
+        btnSave.textSize = btnSave.textSize * scale
+        btnTestFtp.textSize = btnTestFtp.textSize * scale
 
         // Завантажуємо збережені значення або підставляємо типові
         codeStart.setText(prefs.getInt("codeStart", 0).toString())
@@ -64,6 +72,11 @@ class SettingsActivity : AppCompatActivity() {
         ftpPort.setText(prefs.getInt("ftpPort", 21).toString())
         ftpUser.setText(prefs.getString("ftpUser", ""))
         ftpPass.setText(prefs.getString("ftpPass", ""))
+        ftpImportDir.setText(prefs.getString("ftp_import_dir", ""))
+        ftpExportDir.setText(prefs.getString("ftp_export_dir", ""))
+
+        // Значення масштабу шрифту, 100% за замовчуванням
+        inputFontScale.setText(prefs.getInt("ui_font_scale", 100).toString())
 
         // Зберігаємо введені дані у SharedPreferences
         btnSave.setOnClickListener {
@@ -81,6 +94,9 @@ class SettingsActivity : AppCompatActivity() {
                 putInt("ftpPort", ftpPort.text.toString().toInt())
                 putString("ftpUser", ftpUser.text.toString())
                 putString("ftpPass", ftpPass.text.toString())
+                putString("ftp_import_dir", ftpImportDir.text.toString())
+                putString("ftp_export_dir", ftpExportDir.text.toString())
+                putInt("ui_font_scale", inputFontScale.text.toString().toInt())
                 apply()
             }
             Toast.makeText(this, "Налаштування збережено", Toast.LENGTH_SHORT).show()
