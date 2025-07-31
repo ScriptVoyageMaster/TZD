@@ -66,22 +66,29 @@ class DriversActivity : AppCompatActivity() {
      * Скануємо локальну папку "orders" та формуємо унікальний список водіїв.
      */
     private fun loadDrivers() {
+        // Папка, де зберігаються файли замовлень
         val ordersDir = File(filesDir, "orders")
+        // Множина для збирання унікальних імен водіїв
         val foundDrivers = mutableSetOf<String>()
 
-        if (ordersDir.exists()) {
-            ordersDir.listFiles()?.forEach { file ->
-                if (file.extension == "xml") {
-                    // Зчитуємо тег <водій> з поточного файлу
-                    parseDriverTag(file)?.let { foundDrivers.add(it) }
-                }
+        // Перевіряємо, що папка існує і це саме каталог
+        if (ordersDir.exists() && ordersDir.isDirectory) {
+            // Отримуємо список лише xml-файлів або порожній список, якщо файлів немає
+            val xmlFiles = ordersDir.listFiles()?.filter { it.extension == "xml" } ?: emptyList()
+            // Проходимося по кожному файлу та шукаємо тег <водій>
+            xmlFiles.forEach { file ->
+                parseDriverTag(file)?.let { foundDrivers.add(it) }
             }
         }
 
-        // Оновлюємо дані адаптера
+        // Оновлюємо список, який використовується адаптером
         drivers.clear()
         drivers.addAll(foundDrivers.sorted())
         adapter.notifyDataSetChanged()
+
+        // Показуємо підказку, якщо водіїв не знайдено
+        val emptyView = findViewById<TextView>(R.id.emptyTextView)
+        emptyView.visibility = if (drivers.isEmpty()) View.VISIBLE else View.GONE
     }
 
     /**
