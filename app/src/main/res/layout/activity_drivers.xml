@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="Жодного замовлення не знайдено"
+        android:text="@string/no_orders"
         android:textColor="@android:color/darker_gray"
         android:textSize="18sp"
         android:visibility="gone" />
@@ -43,16 +43,18 @@
             android:id="@+id/btnBack"
             style="@style/CustomButton"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Назад"
-            android:layout_marginEnd="8dp"/>
+            android:text="@string/back"
+            android:layout_marginEnd="8dp" />
 
         <Button
             android:id="@+id/btnRefresh"
             style="@style/CustomButton"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Оновити"
-            android:layout_marginStart="8dp"/>
+            android:text="@string/refresh"
+            android:layout_marginStart="8dp" />
     </LinearLayout>
 </LinearLayout>

@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">TZD</string>
+    <!-- Повідомлення про відсутність замовлень -->
+    <string name="no_orders">Жодного замовлення не знайдено</string>
+    <!-- Текст для кнопки повернення -->
+    <string name="back">Назад</string>
+    <!-- Текст для кнопки оновлення -->
+    <string name="refresh">Оновити</string>
 </resources>
