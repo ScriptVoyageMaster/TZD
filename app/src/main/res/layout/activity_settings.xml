@@ -21,7 +21,7 @@
              Використовуємо TableLayout, щоб можна було легко задати
              ширину колонок для числових значень. Перший стовпець
              заповнює увесь вільний простір, а два інші мають фіксовану
-             ширину близько трьох символів (40dp).
+               ширину близько чотирьох символів (60dp).
         -->
         <TableLayout
             android:id="@+id/scannerSettingsTable"
@@ -31,79 +31,97 @@
 
             <TableRow>
                 <TextView
-                    android:layout_width="80dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
                     android:text="Параметр" />
                 <TextView
-                    android:layout_width="40dp"
+                    android:layout_width="60dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
+                    android:gravity="center"
                     android:text="Початок" />
                 <TextView
-                    android:layout_width="40dp"
+                    android:layout_width="60dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
+                    android:gravity="center"
                     android:text="Довжина" />
             </TableRow>
 
             <TableRow>
                 <TextView
-                    android:layout_width="80dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
                     android:text="Код товару" />
                 <EditText
                     android:id="@+id/inputCodeStart"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" />
                 <EditText
                     android:id="@+id/inputCodeLength"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" />
             </TableRow>
 
             <TableRow>
                 <TextView
-                    android:layout_width="80dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
                     android:text="К-сть упаковок" />
                 <EditText
                     android:id="@+id/inputCountStart"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" />
                 <EditText
                     android:id="@+id/inputCountLength"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" />
             </TableRow>
 
             <TableRow>
                 <TextView
-                    android:layout_width="80dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
                     android:text="Вага (кг)" />
                 <EditText
                     android:id="@+id/inputWeightKgStart"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" />
                 <EditText
                     android:id="@+id/inputWeightKgLength"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" />
             </TableRow>
 
             <TableRow>
                 <TextView
-                    android:layout_width="80dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
                     android:text="Вага (г)" />
                 <EditText
                     android:id="@+id/inputWeightGrStart"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" />
                 <EditText
                     android:id="@+id/inputWeightGrLength"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" />
             </TableRow>
 
         </TableLayout>
@@ -154,21 +172,45 @@
             android:textStyle="bold"
             android:paddingTop="16dp" />
 
-        <!-- Масштаб тексту у відсотках -->
-        <EditText
-            android:id="@+id/inputTextZoomPercent"
+        <!-- Масштаб тексту -->
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Масштаб тексту (%)"
-            android:inputType="number" />
+            android:layout_height="wrap_content">
 
-        <!-- Масштаб кнопок у відсотках -->
-        <EditText
-            android:id="@+id/inputButtonZoomPercent"
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Текст:"
+                android:layout_gravity="center_vertical"
+                android:paddingEnd="8dp" />
+
+            <EditText
+                android:id="@+id/inputTextZoomPercent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:inputType="number"
+                android:hint="100" />
+        </LinearLayout>
+
+        <!-- Масштаб кнопок -->
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Масштаб кнопок (%)"
-            android:inputType="number" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Навігація:"
+                android:layout_gravity="center_vertical"
+                android:paddingEnd="8dp" />
+
+            <EditText
+                android:id="@+id/inputButtonZoomPercent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:inputType="number"
+                android:hint="100" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/btnTestFtp"
@@ -177,11 +219,25 @@
             android:text="Перевірити FTP"
             android:layout_marginTop="16dp" />
 
-        <Button
-            android:id="@+id/btnSaveSettings"
+        <!-- Кнопки керування налаштуваннями -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Зберегти"
-            android:layout_marginTop="16dp" />
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/btnBack"
+                android:text="НАЗАД"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btnSave"
+                android:text="ЗБЕРЕГТИ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
