@@ -50,15 +50,15 @@ class SettingsActivity : AppCompatActivity() {
         val ftpImportDir = findViewById<EditText>(R.id.inputFtpImportDir)
         val ftpExportDir = findViewById<EditText>(R.id.inputFtpExportDir)
 
-        // Поле масштабу шрифту інтерфейсу
-        val inputFontScale = findViewById<EditText>(R.id.inputFontScale)
+        // Поля масштабування тексту та кнопок
+        val inputTextZoom = findViewById<EditText>(R.id.inputTextZoomPercent)
+        val inputButtonZoom = findViewById<EditText>(R.id.inputButtonZoomPercent)
 
         val btnSave = findViewById<Button>(R.id.btnSaveSettings)
         val btnTestFtp = findViewById<Button>(R.id.btnTestFtp)
 
-        // Зчитуємо масштаб шрифту та одразу масштабуємо усі елементи на екрані
-        val scale = prefs.getInt("font_zoom", 100) / 100.0f
-        TextScaleHelper.applyTextScale(this, findViewById(android.R.id.content), scale)
+        // Масштабуємо весь інтерфейс згідно з налаштуваннями
+        TextScaleHelper.applyTextScale(this, findViewById(android.R.id.content))
 
         // Задаємо фіксовану ширину полям числових значень (до 3 символів)
         val numericWidth = 40.dpToPx(this)
@@ -85,8 +85,9 @@ class SettingsActivity : AppCompatActivity() {
         ftpImportDir.setText(prefs.getString("ftp_import_dir", ""))
         ftpExportDir.setText(prefs.getString("ftp_export_dir", ""))
 
-        // Значення масштабу шрифту, 100% за замовчуванням
-        inputFontScale.setText(prefs.getInt("font_zoom", 100).toString())
+        // Значення масштабів, 100% за замовчуванням
+        inputTextZoom.setText(prefs.getInt("textZoomPercent", 100).toString())
+        inputButtonZoom.setText(prefs.getInt("buttonZoomPercent", 100).toString())
 
         // Зберігаємо введені дані у SharedPreferences
         btnSave.setOnClickListener {
@@ -106,7 +107,8 @@ class SettingsActivity : AppCompatActivity() {
                 putString("ftpPass", ftpPass.text.toString())
                 putString("ftp_import_dir", ftpImportDir.text.toString())
                 putString("ftp_export_dir", ftpExportDir.text.toString())
-                putInt("font_zoom", inputFontScale.text.toString().toInt())
+                putInt("textZoomPercent", inputTextZoom.text.toString().toInt())
+                putInt("buttonZoomPercent", inputButtonZoom.text.toString().toInt())
                 apply()
             }
             Toast.makeText(this, "Налаштування збережено", Toast.LENGTH_SHORT).show()

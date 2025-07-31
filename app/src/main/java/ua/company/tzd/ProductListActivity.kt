@@ -7,6 +7,8 @@ import android.widget.TableRow
 import android.widget.TextView
 import androidx.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
+import android.util.TypedValue
+import ua.company.tzd.utils.TextScaleHelper
 import ua.company.tzd.utils.dpToPx
 import org.apache.commons.net.ftp.FTPClient
 import org.xmlpull.v1.XmlPullParser
@@ -32,6 +34,9 @@ class ProductListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         // Підключаємо розмітку activity_product_list.xml
         setContentView(R.layout.activity_product_list)
+
+        // Масштабуємо усі елементи згідно з налаштуваннями користувача
+        TextScaleHelper.applyTextScale(this, findViewById(android.R.id.content))
 
         // Знаходимо таблицю у розмітці за її ID
         tableLayout = findViewById(R.id.tableLayoutProducts)
@@ -69,7 +74,7 @@ class ProductListActivity : AppCompatActivity() {
                 // Каталог, у якому розміщено файл products.xml на сервері
                 val importDir = prefs.getString("ftp_import_dir", "") ?: ""
                 // Масштаб шрифту для відображення тексту
-                val scale = prefs.getInt("font_zoom", 100) / 100.0f
+                val scale = TextScaleHelper.getTextScale(this)
                 
                 // Підключаємося до FTP-сервера за отриманими реквізитами
                 ftpClient.connect(InetAddress.getByName(host), port)
@@ -147,15 +152,23 @@ class ProductListActivity : AppCompatActivity() {
                             tvName.ellipsize = null
 
                             // Застосовуємо масштабування тексту згідно з налаштуваннями
-                            tvCode.textSize = tvCode.textSize * scale
-                            tvName.textSize = tvName.textSize * scale
+                            val baseCode = tvCode.textSize / resources.configuration.fontScale
+                            val baseName = tvName.textSize / resources.configuration.fontScale
+                            tvCode.setTextSize(
+                                TypedValue.COMPLEX_UNIT_PX,
+                                baseCode * TextScaleHelper.getTextScale(this@ProductListActivity)
+                            )
+                            tvName.setTextSize(
+                                TypedValue.COMPLEX_UNIT_PX,
+                                baseName * TextScaleHelper.getTextScale(this@ProductListActivity)
+                            )
 
                             // Невеликий відступ для кращого вигляду
                             tvCode.setPadding(16, 16, 16, 16)
                             tvName.setPadding(16, 16, 16, 16)
 
                             // Першу колонку робимо вузькою, а другу розтягуємо на решту ширини
-                            tvCode.layoutParams = TableRow.LayoutParams(40.dpToPx(this), TableRow.LayoutParams.WRAP_CONTENT)
+                            tvCode.layoutParams = TableRow.LayoutParams(48.dpToPx(this), TableRow.LayoutParams.WRAP_CONTENT)
                             tvName.layoutParams = TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f)
 
                             row.addView(tvCode)
