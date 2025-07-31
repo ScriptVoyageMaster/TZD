@@ -235,6 +235,7 @@
 
         <Button
             android:id="@+id/btnTestFtp"
+            style="@style/CustomButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Перевірити FTP"
@@ -249,12 +250,14 @@
 
             <Button
                 android:id="@+id/btnBack"
+                style="@style/CustomButton"
                 android:text="НАЗАД"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <Button
                 android:id="@+id/btnSave"
+                style="@style/CustomButton"
                 android:text="ЗБЕРЕГТИ"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

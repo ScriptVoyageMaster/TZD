@@ -24,6 +24,7 @@
 
         <Button
             android:id="@+id/btnRefresh"
+            style="@style/CustomButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -31,6 +32,7 @@
 
         <Button
             android:id="@+id/btnBack"
+            style="@style/CustomButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
