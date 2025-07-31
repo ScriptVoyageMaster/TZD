@@ -36,5 +36,12 @@ class MainActivity : AppCompatActivity() {
             // Запускаємо активність налаштувань через Intent
             startActivity(Intent(this, SettingsActivity::class.java))
         }
+
+        // Кнопка "Товари" відкриває новий екран зі списком товарів
+        findViewById<Button>(R.id.btnProducts).setOnClickListener {
+            // Створюємо Intent для запуску ProductListActivity
+            val intent = Intent(this, ProductListActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
