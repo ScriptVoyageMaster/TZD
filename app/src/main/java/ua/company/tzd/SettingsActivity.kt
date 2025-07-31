@@ -54,14 +54,20 @@ class SettingsActivity : AppCompatActivity() {
         val inputTextZoom = findViewById<EditText>(R.id.inputTextZoomPercent)
         val inputButtonZoom = findViewById<EditText>(R.id.inputButtonZoomPercent)
 
-        val btnSave = findViewById<Button>(R.id.btnSaveSettings)
+        // Кнопка збереження та перевірки FTP
+        val btnSave = findViewById<Button>(R.id.btnSave)
         val btnTestFtp = findViewById<Button>(R.id.btnTestFtp)
+        // Кнопка "Назад" знаходиться поруч із кнопкою "Зберегти"
+        findViewById<Button>(R.id.btnBack).setOnClickListener {
+            // Закриваємо екран налаштувань і повертаємося на головний екран
+            finish()
+        }
 
         // Масштабуємо весь інтерфейс згідно з налаштуваннями
         TextScaleHelper.applyTextScale(this, findViewById(android.R.id.content))
 
-        // Задаємо фіксовану ширину полям числових значень (до 3 символів)
-        val numericWidth = 40.dpToPx(this)
+        // Задаємо фіксовану ширину полям числових значень (близько 4 символів)
+        val numericWidth = 60.dpToPx(this)
         listOf(codeStart, codeLength, weightKgStart, weightKgLength,
                weightGrStart, weightGrLength, countStart, countLength).forEach {
             it.layoutParams = TableRow.LayoutParams(numericWidth, TableRow.LayoutParams.WRAP_CONTENT)
