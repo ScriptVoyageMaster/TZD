@@ -3,13 +3,12 @@ package ua.company.tzd
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TableLayout
-import android.widget.TableRow
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
 import android.util.TypedValue
 import ua.company.tzd.utils.TextScaleHelper
-import ua.company.tzd.utils.dpToPx
 import org.apache.commons.net.ftp.FTPClient
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
@@ -136,22 +135,26 @@ class ProductListActivity : AppCompatActivity() {
                     runOnUiThread {
                         // Спочатку очищаємо таблицю від попередніх рядків
                         tableLayout.removeAllViews()
-                        // Для кожного товару створюємо рядок і додаємо у таблицю
+                        // Для кожного товару створюємо рядок з розмітки item_product.xml
                         for ((c, n) in products) {
-                            val row = TableRow(this)
+                            // Інфлейтимо (створюємо з XML) горизонтальний LinearLayout
+                            val row = layoutInflater.inflate(
+                                R.layout.item_product, tableLayout, false
+                            ) as LinearLayout
 
-                            val tvCode = TextView(this)
-                            val tvName = TextView(this)
+                            val tvCode = row.findViewById<TextView>(R.id.codeTextView)
+                            val tvName = row.findViewById<TextView>(R.id.nameTextView)
 
+                            // Заповнюємо поля текстом з файлу
                             tvCode.text = c
                             tvName.text = n
 
-                            // Дозволяємо переносити довгі назви на кілька рядків
+                            // Дозволяємо перенесення довгих назв на декілька рядків
                             tvName.setSingleLine(false)
                             tvName.maxLines = 5
                             tvName.ellipsize = null
 
-                            // Застосовуємо масштабування тексту згідно з налаштуваннями
+                            // Масштабуємо текст згідно з поточними налаштуваннями
                             val baseCode = tvCode.textSize / resources.configuration.fontScale
                             val baseName = tvName.textSize / resources.configuration.fontScale
                             tvCode.setTextSize(
@@ -163,16 +166,23 @@ class ProductListActivity : AppCompatActivity() {
                                 baseName * TextScaleHelper.getTextScale(this@ProductListActivity)
                             )
 
-                            // Невеликий відступ для кращого вигляду
+                            // Додаємо відступи для кращого вигляду таблиці
                             tvCode.setPadding(16, 16, 16, 16)
                             tvName.setPadding(16, 16, 16, 16)
 
-                            // Першу колонку робимо вузькою, а другу розтягуємо на решту ширини
-                            tvCode.layoutParams = TableRow.LayoutParams(48.dpToPx(this), TableRow.LayoutParams.WRAP_CONTENT)
-                            tvName.layoutParams = TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f)
+                            // Першу колонку робимо фіксованої ширини, другу розтягуємо
+                            val layoutParamsCode = tvCode.layoutParams as LinearLayout.LayoutParams
+                            layoutParamsCode.width = TypedValue.applyDimension(
+                                TypedValue.COMPLEX_UNIT_DIP, 48f, resources.displayMetrics
+                            ).toInt()
+                            tvCode.layoutParams = layoutParamsCode
 
-                            row.addView(tvCode)
-                            row.addView(tvName)
+                            val layoutParamsName = tvName.layoutParams as LinearLayout.LayoutParams
+                            layoutParamsName.width = 0
+                            layoutParamsName.weight = 1f
+                            tvName.layoutParams = layoutParamsName
+
+                            // Додаємо готовий рядок у таблицю
                             tableLayout.addView(row)
                         }
                     }

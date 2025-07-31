@@ -3,6 +3,8 @@ package ua.company.tzd
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+// TypedValue потрібен для переведення SP у реальні розміри пікселів
+import android.util.TypedValue
 import ua.company.tzd.utils.TextScaleHelper
 // AppCompatActivity міститься у бібліотеці appcompat, яка додає підтримку
 // сучасних можливостей на старіших версіях Android
@@ -27,6 +29,18 @@ class MainActivity : AppCompatActivity() {
         val btnSent = findViewById<Button>(R.id.btnSent)
         val btnSettings = findViewById<Button>(R.id.btnSettings)
         val btnProducts = findViewById<Button>(R.id.btnProducts)
+
+        // Масштаб кнопок може відрізнятися від звичайного тексту, тому
+        // зберігаємо його у окрему змінну. Значення береться з налаштувань.
+        val buttonScale = TextScaleHelper.getButtonScale(this)
+
+        // Кожній кнопці задаємо розмір шрифту з урахуванням масштабу.
+        // 14sp — це базовий розмір у розмітці, який збільшуємо або зменшуємо
+        // множенням на коефіцієнт.
+        btnOrders.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f * buttonScale)
+        btnSent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f * buttonScale)
+        btnSettings.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f * buttonScale)
+        btnProducts.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f * buttonScale)
 
         // Додаємо обробники натискань
         btnOrders.setOnClickListener {
