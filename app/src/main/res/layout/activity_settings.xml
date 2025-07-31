@@ -31,9 +31,8 @@
 
             <TableRow>
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="Параметр" />
                 <TextView
                     android:layout_width="40dp"
@@ -49,9 +48,8 @@
 
             <TableRow>
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="Код товару" />
                 <EditText
                     android:id="@+id/inputCodeStart"
@@ -65,9 +63,8 @@
 
             <TableRow>
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="К-сть упаковок" />
                 <EditText
                     android:id="@+id/inputCountStart"
@@ -81,9 +78,8 @@
 
             <TableRow>
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="Вага (кг)" />
                 <EditText
                     android:id="@+id/inputWeightKgStart"
@@ -97,9 +93,8 @@
 
             <TableRow>
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="Вага (г)" />
                 <EditText
                     android:id="@+id/inputWeightGrStart"
@@ -151,20 +146,29 @@
             android:layout_height="wrap_content"
             android:hint="Каталог експорту" />
 
-        <!-- Заголовок секції "Інтерфейс" -->
+        <!-- Заголовок секції "Масштаб" -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Інтерфейс"
+            android:text="Масштаб"
             android:textStyle="bold"
             android:paddingTop="16dp" />
 
-        <!-- Поле для введення масштабу шрифту у відсотках -->
+        <!-- Масштаб тексту у відсотках -->
         <EditText
-            android:id="@+id/inputFontScale"
+            android:id="@+id/inputTextZoomPercent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Зум (%)" />
+            android:hint="Масштаб тексту (%)"
+            android:inputType="number" />
+
+        <!-- Масштаб кнопок у відсотках -->
+        <EditText
+            android:id="@+id/inputButtonZoomPercent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Масштаб кнопок (%)"
+            android:inputType="number" />
 
         <Button
             android:id="@+id/btnTestFtp"

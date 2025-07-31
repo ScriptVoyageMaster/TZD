@@ -3,7 +3,6 @@ package ua.company.tzd
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import androidx.preference.PreferenceManager
 import ua.company.tzd.utils.TextScaleHelper
 // AppCompatActivity міститься у бібліотеці appcompat, яка додає підтримку
 // сучасних можливостей на старіших версіях Android
@@ -19,14 +18,9 @@ class MainActivity : AppCompatActivity() {
         // Підключаємо файл розмітки activity_main.xml як вигляд для цієї активності
         setContentView(R.layout.activity_main)
 
-        // Зчитуємо масштаб шрифту з налаштувань користувача через PreferenceManager
-        // Значення зберігається у відсотках, тому ділимо на 100
-        val zoom = PreferenceManager.getDefaultSharedPreferences(this)
-            .getInt("font_zoom", 100)
-        val scale = zoom / 100f
-
-        // Застосовуємо масштабування до усіх елементів інтерфейсу за один виклик
-        TextScaleHelper.applyTextScale(this, findViewById(android.R.id.content), scale)
+        // Масштабування всього інтерфейсу виконуємо через допоміжний клас.
+        // Метод сам зчитає потрібні значення з налаштувань користувача.
+        TextScaleHelper.applyTextScale(this, findViewById(android.R.id.content))
 
         // Отримуємо кнопки з розмітки
         val btnOrders = findViewById<Button>(R.id.btnOrders)
