@@ -5,7 +5,9 @@ import android.widget.Button
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatActivity
+import ua.company.tzd.utils.dpToPx
 import org.apache.commons.net.ftp.FTPClient
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
@@ -58,9 +60,8 @@ class ProductListActivity : AppCompatActivity() {
         // Запускаємо новий потік для завантаження файлу
         Thread {
             try {
-                // Отримуємо налаштування FTP із SharedPreferences,
-                // які ми зберігали у SettingsActivity
-                val prefs = getSharedPreferences("tzd_settings", MODE_PRIVATE)
+                // Отримуємо налаштування, збережені у SettingsActivity
+                val prefs = PreferenceManager.getDefaultSharedPreferences(this)
                 val host = prefs.getString("ftpHost", "") ?: ""
                 val port = prefs.getInt("ftpPort", 21)
                 val user = prefs.getString("ftpUser", "") ?: ""
@@ -68,7 +69,7 @@ class ProductListActivity : AppCompatActivity() {
                 // Каталог, у якому розміщено файл products.xml на сервері
                 val importDir = prefs.getString("ftp_import_dir", "") ?: ""
                 // Масштаб шрифту для відображення тексту
-                val scale = prefs.getInt("ui_font_scale", 100) / 100.0f
+                val scale = prefs.getInt("font_zoom", 100) / 100.0f
                 
                 // Підключаємося до FTP-сервера за отриманими реквізитами
                 ftpClient.connect(InetAddress.getByName(host), port)
@@ -140,9 +141,9 @@ class ProductListActivity : AppCompatActivity() {
                             tvCode.text = c
                             tvName.text = n
 
-                            // Дозволяємо перенесення довгих назв на кілька рядків
+                            // Дозволяємо переносити довгі назви на кілька рядків
                             tvName.setSingleLine(false)
-                            tvName.setMaxLines(3)
+                            tvName.maxLines = 5
                             tvName.ellipsize = null
 
                             // Застосовуємо масштабування тексту згідно з налаштуваннями
@@ -152,6 +153,10 @@ class ProductListActivity : AppCompatActivity() {
                             // Невеликий відступ для кращого вигляду
                             tvCode.setPadding(16, 16, 16, 16)
                             tvName.setPadding(16, 16, 16, 16)
+
+                            // Першу колонку робимо вузькою, а другу розтягуємо на решту ширини
+                            tvCode.layoutParams = TableRow.LayoutParams(40.dpToPx(this), TableRow.LayoutParams.WRAP_CONTENT)
+                            tvName.layoutParams = TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f)
 
                             row.addView(tvCode)
                             row.addView(tvName)

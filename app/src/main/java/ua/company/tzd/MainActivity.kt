@@ -3,6 +3,8 @@ package ua.company.tzd
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import androidx.preference.PreferenceManager
+import ua.company.tzd.utils.TextScaleHelper
 // AppCompatActivity міститься у бібліотеці appcompat, яка додає підтримку
 // сучасних можливостей на старіших версіях Android
 import androidx.appcompat.app.AppCompatActivity
@@ -17,21 +19,20 @@ class MainActivity : AppCompatActivity() {
         // Підключаємо файл розмітки activity_main.xml як вигляд для цієї активності
         setContentView(R.layout.activity_main)
 
-        // Зчитуємо масштаб шрифту з налаштувань користувача
-        val prefs = getSharedPreferences("tzd_settings", MODE_PRIVATE)
-        val scale = prefs.getInt("ui_font_scale", 100) / 100.0f
+        // Зчитуємо масштаб шрифту з налаштувань користувача через PreferenceManager
+        // Значення зберігається у відсотках, тому ділимо на 100
+        val zoom = PreferenceManager.getDefaultSharedPreferences(this)
+            .getInt("font_zoom", 100)
+        val scale = zoom / 100f
+
+        // Застосовуємо масштабування до усіх елементів інтерфейсу за один виклик
+        TextScaleHelper.applyTextScale(this, findViewById(android.R.id.content), scale)
 
         // Отримуємо кнопки з розмітки
         val btnOrders = findViewById<Button>(R.id.btnOrders)
         val btnSent = findViewById<Button>(R.id.btnSent)
         val btnSettings = findViewById<Button>(R.id.btnSettings)
         val btnProducts = findViewById<Button>(R.id.btnProducts)
-
-        // Застосовуємо масштаб до тексту на кнопках
-        btnOrders.textSize = btnOrders.textSize * scale
-        btnSent.textSize = btnSent.textSize * scale
-        btnSettings.textSize = btnSettings.textSize * scale
-        btnProducts.textSize = btnProducts.textSize * scale
 
         // Додаємо обробники натискань
         btnOrders.setOnClickListener {
