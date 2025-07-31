@@ -17,39 +17,101 @@
             android:paddingTop="16dp" />
 
         <!-- Таблиця з параметрами штрихкоду -->
-        <GridLayout
-            android:id="@+id/scannerSettingsGrid"
+        <!--
+             Використовуємо TableLayout, щоб можна було легко задати
+             ширину колонок для числових значень. Перший стовпець
+             заповнює увесь вільний простір, а два інші мають фіксовану
+             ширину близько трьох символів (40dp).
+        -->
+        <TableLayout
+            android:id="@+id/scannerSettingsTable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="3"
             android:padding="8dp">
 
-            <!-- Заголовки колонок -->
-            <TextView android:text="Параметр" />
-            <TextView android:text="Початок" />
-            <TextView android:text="Довжина" />
+            <TableRow>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Параметр" />
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="Початок" />
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="Довжина" />
+            </TableRow>
 
-            <!-- Код товару -->
-            <TextView android:text="Код товару" />
-            <EditText android:id="@+id/inputCodeStart" android:layout_width="match_parent" android:layout_height="wrap_content" />
-            <EditText android:id="@+id/inputCodeLength" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            <TableRow>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Код товару" />
+                <EditText
+                    android:id="@+id/inputCodeStart"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content" />
+                <EditText
+                    android:id="@+id/inputCodeLength"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content" />
+            </TableRow>
 
-            <!-- Кількість упаковок -->
-            <TextView android:text="К-сть упаковок" />
-            <EditText android:id="@+id/inputCountStart" android:layout_width="match_parent" android:layout_height="wrap_content" />
-            <EditText android:id="@+id/inputCountLength" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            <TableRow>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="К-сть упаковок" />
+                <EditText
+                    android:id="@+id/inputCountStart"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content" />
+                <EditText
+                    android:id="@+id/inputCountLength"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content" />
+            </TableRow>
 
-            <!-- Вага (кг) -->
-            <TextView android:text="Вага (кг)" />
-            <EditText android:id="@+id/inputWeightKgStart" android:layout_width="match_parent" android:layout_height="wrap_content" />
-            <EditText android:id="@+id/inputWeightKgLength" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            <TableRow>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Вага (кг)" />
+                <EditText
+                    android:id="@+id/inputWeightKgStart"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content" />
+                <EditText
+                    android:id="@+id/inputWeightKgLength"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content" />
+            </TableRow>
 
-            <!-- Вага (г) -->
-            <TextView android:text="Вага (г)" />
-            <EditText android:id="@+id/inputWeightGrStart" android:layout_width="match_parent" android:layout_height="wrap_content" />
-            <EditText android:id="@+id/inputWeightGrLength" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            <TableRow>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Вага (г)" />
+                <EditText
+                    android:id="@+id/inputWeightGrStart"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content" />
+                <EditText
+                    android:id="@+id/inputWeightGrLength"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content" />
+            </TableRow>
 
-        </GridLayout>
+        </TableLayout>
 
         <!-- Затримка після сканування у мілісекундах -->
         <TextView android:text="Затримка після сканування (мс):" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp"/>

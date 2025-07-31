@@ -1,6 +1,9 @@
 package ua.company.tzd
 
 import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
+import ua.company.tzd.utils.TextScaleHelper
+import ua.company.tzd.utils.dpToPx
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -23,8 +26,9 @@ class SettingsActivity : AppCompatActivity() {
         // Підключаємо розмітку activity_settings.xml
         setContentView(R.layout.activity_settings)
 
-        // Отримуємо сховище налаштувань під ім'ям "tzd_settings"
-        prefs = getSharedPreferences("tzd_settings", MODE_PRIVATE)
+        // Отримуємо сховище налаштувань користувача
+        // PreferenceManager забезпечує єдине місце зберігання для всіх налаштувань
+        prefs = PreferenceManager.getDefaultSharedPreferences(this)
 
         // Поля для параметрів штрихкоду
         val codeStart = findViewById<EditText>(R.id.inputCodeStart)
@@ -52,10 +56,16 @@ class SettingsActivity : AppCompatActivity() {
         val btnSave = findViewById<Button>(R.id.btnSaveSettings)
         val btnTestFtp = findViewById<Button>(R.id.btnTestFtp)
 
-        // Зчитуємо масштаб шрифту та застосовуємо до кнопок
-        val scale = prefs.getInt("ui_font_scale", 100) / 100.0f
-        btnSave.textSize = btnSave.textSize * scale
-        btnTestFtp.textSize = btnTestFtp.textSize * scale
+        // Зчитуємо масштаб шрифту та одразу масштабуємо усі елементи на екрані
+        val scale = prefs.getInt("font_zoom", 100) / 100.0f
+        TextScaleHelper.applyTextScale(this, findViewById(android.R.id.content), scale)
+
+        // Задаємо фіксовану ширину полям числових значень (до 3 символів)
+        val numericWidth = 40.dpToPx(this)
+        listOf(codeStart, codeLength, weightKgStart, weightKgLength,
+               weightGrStart, weightGrLength, countStart, countLength).forEach {
+            it.layoutParams = TableRow.LayoutParams(numericWidth, TableRow.LayoutParams.WRAP_CONTENT)
+        }
 
         // Завантажуємо збережені значення або підставляємо типові
         codeStart.setText(prefs.getInt("codeStart", 0).toString())
@@ -76,7 +86,7 @@ class SettingsActivity : AppCompatActivity() {
         ftpExportDir.setText(prefs.getString("ftp_export_dir", ""))
 
         // Значення масштабу шрифту, 100% за замовчуванням
-        inputFontScale.setText(prefs.getInt("ui_font_scale", 100).toString())
+        inputFontScale.setText(prefs.getInt("font_zoom", 100).toString())
 
         // Зберігаємо введені дані у SharedPreferences
         btnSave.setOnClickListener {
@@ -96,7 +106,7 @@ class SettingsActivity : AppCompatActivity() {
                 putString("ftpPass", ftpPass.text.toString())
                 putString("ftp_import_dir", ftpImportDir.text.toString())
                 putString("ftp_export_dir", ftpExportDir.text.toString())
-                putInt("ui_font_scale", inputFontScale.text.toString().toInt())
+                putInt("font_zoom", inputFontScale.text.toString().toInt())
                 apply()
             }
             Toast.makeText(this, "Налаштування збережено", Toast.LENGTH_SHORT).show()
