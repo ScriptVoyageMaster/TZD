@@ -8,28 +8,62 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Штрихкод -->
-        <TextView android:text="Код товару:" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-        <EditText android:id="@+id/inputCodeStart" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Початок"/>
-        <EditText android:id="@+id/inputCodeLength" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Довжина"/>
+        <!-- Заголовок секції налаштувань сканера -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Сканер"
+            android:textStyle="bold"
+            android:paddingTop="16dp" />
 
-        <TextView android:text="Вага (кг):" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp"/>
-        <EditText android:id="@+id/inputWeightKgStart" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Початок"/>
-        <EditText android:id="@+id/inputWeightKgLength" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Довжина"/>
+        <!-- Таблиця з параметрами штрихкоду -->
+        <GridLayout
+            android:id="@+id/scannerSettingsGrid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="3"
+            android:padding="8dp">
 
-        <TextView android:text="Вага (г):" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp"/>
-        <EditText android:id="@+id/inputWeightGrStart" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Початок"/>
-        <EditText android:id="@+id/inputWeightGrLength" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Довжина"/>
+            <!-- Заголовки колонок -->
+            <TextView android:text="Параметр" />
+            <TextView android:text="Початок" />
+            <TextView android:text="Довжина" />
 
-        <TextView android:text="Кількість упаковок:" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp"/>
-        <EditText android:id="@+id/inputCountStart" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Початок"/>
-        <EditText android:id="@+id/inputCountLength" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Довжина"/>
+            <!-- Код товару -->
+            <TextView android:text="Код товару" />
+            <EditText android:id="@+id/inputCodeStart" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            <EditText android:id="@+id/inputCodeLength" android:layout_width="match_parent" android:layout_height="wrap_content" />
 
-        <TextView android:text="Затримка після сканування (мс):" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp"/>
+            <!-- Кількість упаковок -->
+            <TextView android:text="К-сть упаковок" />
+            <EditText android:id="@+id/inputCountStart" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            <EditText android:id="@+id/inputCountLength" android:layout_width="match_parent" android:layout_height="wrap_content" />
+
+            <!-- Вага (кг) -->
+            <TextView android:text="Вага (кг)" />
+            <EditText android:id="@+id/inputWeightKgStart" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            <EditText android:id="@+id/inputWeightKgLength" android:layout_width="match_parent" android:layout_height="wrap_content" />
+
+            <!-- Вага (г) -->
+            <TextView android:text="Вага (г)" />
+            <EditText android:id="@+id/inputWeightGrStart" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            <EditText android:id="@+id/inputWeightGrLength" android:layout_width="match_parent" android:layout_height="wrap_content" />
+
+        </GridLayout>
+
+        <!-- Затримка після сканування у мілісекундах -->
+        <TextView android:text="Затримка після сканування (мс):" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp"/>
         <EditText android:id="@+id/inputDelay" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="2000"/>
 
-        <!-- FTP -->
-        <TextView android:text="FTP сервер:" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="24dp"/>
+        <!-- Заголовок секції FTP -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="FTP"
+            android:textStyle="bold"
+            android:paddingTop="16dp" />
+
+        <TextView android:text="FTP сервер:" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
         <EditText android:id="@+id/inputFtpHost" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="ftp.example.com"/>
 
         <TextView android:text="FTP порт:" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
@@ -54,6 +88,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Каталог експорту" />
+
+        <!-- Заголовок секції "Інтерфейс" -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Інтерфейс"
+            android:textStyle="bold"
+            android:paddingTop="16dp" />
+
+        <!-- Поле для введення масштабу шрифту у відсотках -->
+        <EditText
+            android:id="@+id/inputFontScale"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Зум (%)" />
 
         <Button
             android:id="@+id/btnTestFtp"

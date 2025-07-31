@@ -65,7 +65,11 @@ class ProductListActivity : AppCompatActivity() {
                 val port = prefs.getInt("ftpPort", 21)
                 val user = prefs.getString("ftpUser", "") ?: ""
                 val pass = prefs.getString("ftpPass", "") ?: ""
-
+                // Каталог, у якому розміщено файл products.xml на сервері
+                val importDir = prefs.getString("ftp_import_dir", "") ?: ""
+                // Масштаб шрифту для відображення тексту
+                val scale = prefs.getInt("ui_font_scale", 100) / 100.0f
+                
                 // Підключаємося до FTP-сервера за отриманими реквізитами
                 ftpClient.connect(InetAddress.getByName(host), port)
 
@@ -75,8 +79,8 @@ class ProductListActivity : AppCompatActivity() {
                     ftpClient.enterLocalPassiveMode()
                     ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE)
 
-                    // Витягаємо файл products.xml з кореня FTP
-                    val inputStream: InputStream = ftpClient.retrieveFileStream("/products.xml")
+                    // Витягаємо файл products.xml з вказаної у налаштуваннях папки
+                    val inputStream: InputStream = ftpClient.retrieveFileStream(importDir + "/products.xml")
 
                     // Створюємо XML парсер для читання файлу
                     val factory = XmlPullParserFactory.newInstance()
@@ -135,6 +139,15 @@ class ProductListActivity : AppCompatActivity() {
 
                             tvCode.text = c
                             tvName.text = n
+
+                            // Дозволяємо перенесення довгих назв на кілька рядків
+                            tvName.setSingleLine(false)
+                            tvName.setMaxLines(3)
+                            tvName.ellipsize = null
+
+                            // Застосовуємо масштабування тексту згідно з налаштуваннями
+                            tvCode.textSize = tvCode.textSize * scale
+                            tvName.textSize = tvName.textSize * scale
 
                             // Невеликий відступ для кращого вигляду
                             tvCode.setPadding(16, 16, 16, 16)
