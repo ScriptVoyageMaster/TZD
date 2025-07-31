@@ -82,12 +82,18 @@ class DriversActivity : AppCompatActivity() {
         }
 
         // Оновлюємо список, який використовується адаптером
+        // Спочатку очищаємо попередні дані
         drivers.clear()
+        // Додаємо знайдених водіїв у відсортованому порядку
         drivers.addAll(foundDrivers.sorted())
+        // Повідомляємо адаптер, що набір даних змінився,
+        // щоб RecyclerView перемалював список
         adapter.notifyDataSetChanged()
 
         // Показуємо підказку, якщо водіїв не знайдено
         val emptyView = findViewById<TextView>(R.id.emptyTextView)
+        // Якщо список порожній, робимо повідомлення видимим,
+        // інакше приховуємо його
         emptyView.visibility = if (drivers.isEmpty()) View.VISIBLE else View.GONE
     }
 
