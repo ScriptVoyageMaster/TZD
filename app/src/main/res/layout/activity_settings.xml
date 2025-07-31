@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,65 +9,147 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Штрихкод -->
-        <TextView android:text="Код товару:" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-        <EditText android:id="@+id/inputCodeStart" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Початок"/>
-        <EditText android:id="@+id/inputCodeLength" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Довжина"/>
+        <!-- Заголовок секції налаштувань сканера -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Сканер"
+            android:textStyle="bold"
+            android:paddingTop="16dp"/>
 
-        <TextView android:text="Вага (кг):" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp"/>
-        <EditText android:id="@+id/inputWeightKgStart" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Початок"/>
-        <EditText android:id="@+id/inputWeightKgLength" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Довжина"/>
+        <!-- Таблиця параметрів сканера -->
+        <GridLayout
+            android:id="@+id/scannerSettingsGrid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="3"
+            android:padding="8dp">
 
-        <TextView android:text="Вага (г):" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp"/>
-        <EditText android:id="@+id/inputWeightGrStart" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Початок"/>
-        <EditText android:id="@+id/inputWeightGrLength" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Довжина"/>
+            <TextView android:text="Параметр"/>
+            <TextView android:text="Початок"/>
+            <TextView android:text="Довжина"/>
 
-        <TextView android:text="Кількість упаковок:" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp"/>
-        <EditText android:id="@+id/inputCountStart" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Початок"/>
-        <EditText android:id="@+id/inputCountLength" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Довжина"/>
+            <TextView android:text="Код товару"/>
+            <EditText android:id="@+id/inputProductStart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <EditText android:id="@+id/inputProductLength"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-        <TextView android:text="Затримка після сканування (мс):" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp"/>
-        <EditText android:id="@+id/inputDelay" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="2000"/>
+            <TextView android:text="К-сть упаковок"/>
+            <EditText android:id="@+id/inputQtyStart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <EditText android:id="@+id/inputQtyLength"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-        <!-- FTP -->
-        <TextView android:text="FTP сервер:" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="24dp"/>
-        <EditText android:id="@+id/inputFtpHost" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="ftp.example.com"/>
+            <TextView android:text="Вага (кг)"/>
+            <EditText android:id="@+id/inputKgStart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <EditText android:id="@+id/inputKgLength"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-        <TextView android:text="FTP порт:" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-        <EditText android:id="@+id/inputFtpPort" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="21"/>
+            <TextView android:text="Вага (г)"/>
+            <EditText android:id="@+id/inputGrStart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <EditText android:id="@+id/inputGrLength"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </GridLayout>
 
-        <TextView android:text="FTP логін:" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-        <EditText android:id="@+id/inputFtpUser" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+        <!-- Поле затримки після сканування залишається окремо -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Затримка після сканування (мс):"
+            android:layout_marginTop="16dp"/>
+        <EditText
+            android:id="@+id/inputDelay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="2000"/>
 
-        <TextView android:text="FTP пароль:" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-        <EditText android:id="@+id/inputFtpPass" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textPassword"/>
+        <!-- Заголовок секції FTP -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="FTP"
+            android:textStyle="bold"
+            android:paddingTop="16dp"/>
 
-        <!-- Каталог для імпорту файлів на сервері -->
+        <TextView android:text="FTP сервер:"/>
+        <EditText
+            android:id="@+id/inputFtpHost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="ftp.example.com"/>
+
+        <TextView android:text="FTP порт:"/>
+        <EditText
+            android:id="@+id/inputFtpPort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="21"/>
+
+        <TextView android:text="FTP логін:"/>
+        <EditText
+            android:id="@+id/inputFtpUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView android:text="FTP пароль:"/>
+        <EditText
+            android:id="@+id/inputFtpPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"/>
+
+        <!-- Каталоги на FTP -->
         <EditText
             android:id="@+id/inputFtpImportDir"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Каталог імпорту" />
+            android:hint="Каталог імпорту"/>
 
-        <!-- Каталог для експорту файлів на сервері -->
         <EditText
             android:id="@+id/inputFtpExportDir"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Каталог експорту" />
+            android:hint="Каталог експорту"/>
 
+        <!-- Заголовок секції інтерфейсу -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Інтерфейс"
+            android:textStyle="bold"
+            android:paddingTop="16dp"/>
+
+        <!-- Масштаб шрифтів -->
+        <EditText
+            android:id="@+id/inputFontScale"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Зум (%)"/>
+
+        <!-- Кнопки збереження та перевірки -->
         <Button
             android:id="@+id/btnTestFtp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Перевірити FTP"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"/>
 
         <Button
             android:id="@+id/btnSaveSettings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Зберегти"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"/>
     </LinearLayout>
 </ScrollView>

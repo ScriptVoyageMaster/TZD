@@ -25,16 +25,18 @@ class SettingsActivity : AppCompatActivity() {
 
         // Отримуємо сховище налаштувань під ім'ям "tzd_settings"
         prefs = getSharedPreferences("tzd_settings", MODE_PRIVATE)
+        val uiScale = prefs.getInt("ui_font_scale", 100) / 100.0f
 
-        // Поля для параметрів штрихкоду
-        val codeStart = findViewById<EditText>(R.id.inputCodeStart)
-        val codeLength = findViewById<EditText>(R.id.inputCodeLength)
-        val weightKgStart = findViewById<EditText>(R.id.inputWeightKgStart)
-        val weightKgLength = findViewById<EditText>(R.id.inputWeightKgLength)
-        val weightGrStart = findViewById<EditText>(R.id.inputWeightGrStart)
-        val weightGrLength = findViewById<EditText>(R.id.inputWeightGrLength)
-        val countStart = findViewById<EditText>(R.id.inputCountStart)
-        val countLength = findViewById<EditText>(R.id.inputCountLength)
+        // Поля для параметрів штрихкоду, які тепер розміщені у таблиці GridLayout
+        val productStart = findViewById<EditText>(R.id.inputProductStart)
+        val productLength = findViewById<EditText>(R.id.inputProductLength)
+        val qtyStart = findViewById<EditText>(R.id.inputQtyStart)
+        val qtyLength = findViewById<EditText>(R.id.inputQtyLength)
+        val kgStart = findViewById<EditText>(R.id.inputKgStart)
+        val kgLength = findViewById<EditText>(R.id.inputKgLength)
+        val grStart = findViewById<EditText>(R.id.inputGrStart)
+        val grLength = findViewById<EditText>(R.id.inputGrLength)
+        // Затримка після сканування лишилась окремим полем
         val delayMs = findViewById<EditText>(R.id.inputDelay)
 
         // Поля для налаштування FTP
@@ -48,39 +50,51 @@ class SettingsActivity : AppCompatActivity() {
 
         val btnSave = findViewById<Button>(R.id.btnSaveSettings)
         val btnTestFtp = findViewById<Button>(R.id.btnTestFtp)
+        // Підлаштовуємо розмір шрифту кнопок згідно з масштабом
+        btnSave.textSize = btnSave.textSize * uiScale
+        btnTestFtp.textSize = btnTestFtp.textSize * uiScale
 
         // Завантажуємо збережені значення або підставляємо типові
-        codeStart.setText(prefs.getInt("codeStart", 0).toString())
-        codeLength.setText(prefs.getInt("codeLength", 3).toString())
-        weightKgStart.setText(prefs.getInt("weightKgStart", 3).toString())
-        weightKgLength.setText(prefs.getInt("weightKgLength", 3).toString())
-        weightGrStart.setText(prefs.getInt("weightGrStart", 6).toString())
-        weightGrLength.setText(prefs.getInt("weightGrLength", 1).toString())
-        countStart.setText(prefs.getInt("countStart", 7).toString())
-        countLength.setText(prefs.getInt("countLength", 2).toString())
+        productStart.setText(prefs.getInt("codeStart", 0).toString())
+        productLength.setText(prefs.getInt("codeLength", 3).toString())
+        qtyStart.setText(prefs.getInt("countStart", 7).toString())
+        qtyLength.setText(prefs.getInt("countLength", 2).toString())
+        kgStart.setText(prefs.getInt("weightKgStart", 3).toString())
+        kgLength.setText(prefs.getInt("weightKgLength", 3).toString())
+        grStart.setText(prefs.getInt("weightGrStart", 6).toString())
+        grLength.setText(prefs.getInt("weightGrLength", 1).toString())
         delayMs.setText(prefs.getInt("delayMs", 2000).toString())
 
         ftpHost.setText(prefs.getString("ftpHost", ""))
         ftpPort.setText(prefs.getInt("ftpPort", 21).toString())
         ftpUser.setText(prefs.getString("ftpUser", ""))
         ftpPass.setText(prefs.getString("ftpPass", ""))
+        ftpImportDir.setText(prefs.getString("ftpImportDir", ""))
+        ftpExportDir.setText(prefs.getString("ftpExportDir", ""))
+
+        val inputFontScale = findViewById<EditText>(R.id.inputFontScale)
+        inputFontScale.setText(prefs.getInt("ui_font_scale", 100).toString())
 
         // Зберігаємо введені дані у SharedPreferences
         btnSave.setOnClickListener {
             prefs.edit().apply {
-                putInt("codeStart", codeStart.text.toString().toInt())
-                putInt("codeLength", codeLength.text.toString().toInt())
-                putInt("weightKgStart", weightKgStart.text.toString().toInt())
-                putInt("weightKgLength", weightKgLength.text.toString().toInt())
-                putInt("weightGrStart", weightGrStart.text.toString().toInt())
-                putInt("weightGrLength", weightGrLength.text.toString().toInt())
-                putInt("countStart", countStart.text.toString().toInt())
-                putInt("countLength", countLength.text.toString().toInt())
+                // Зберігаємо параметри розбору штрихкоду
+                putInt("codeStart", productStart.text.toString().toInt())
+                putInt("codeLength", productLength.text.toString().toInt())
+                putInt("countStart", qtyStart.text.toString().toInt())
+                putInt("countLength", qtyLength.text.toString().toInt())
+                putInt("weightKgStart", kgStart.text.toString().toInt())
+                putInt("weightKgLength", kgLength.text.toString().toInt())
+                putInt("weightGrStart", grStart.text.toString().toInt())
+                putInt("weightGrLength", grLength.text.toString().toInt())
                 putInt("delayMs", delayMs.text.toString().toInt())
                 putString("ftpHost", ftpHost.text.toString())
                 putInt("ftpPort", ftpPort.text.toString().toInt())
                 putString("ftpUser", ftpUser.text.toString())
                 putString("ftpPass", ftpPass.text.toString())
+                putString("ftpImportDir", ftpImportDir.text.toString())
+                putString("ftpExportDir", ftpExportDir.text.toString())
+                putInt("ui_font_scale", inputFontScale.text.toString().toIntOrNull() ?: 100)
                 apply()
             }
             Toast.makeText(this, "Налаштування збережено", Toast.LENGTH_SHORT).show()

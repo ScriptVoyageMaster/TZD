@@ -34,6 +34,15 @@ class ProductListActivity : AppCompatActivity() {
         // Знаходимо таблицю у розмітці за її ID
         tableLayout = findViewById(R.id.tableLayoutProducts)
 
+        // Зчитуємо масштаб шрифтів з налаштувань
+        val prefs = getSharedPreferences("tzd_settings", MODE_PRIVATE)
+        val uiScale = prefs.getInt("ui_font_scale", 100) / 100.0f
+
+        val btnBack = findViewById<Button>(R.id.btnBack)
+        val btnRefresh = findViewById<Button>(R.id.btnRefresh)
+        btnBack.textSize = btnBack.textSize * uiScale
+        btnRefresh.textSize = btnRefresh.textSize * uiScale
+
         // Кнопка "Назад" просто закриває поточну активність
         findViewById<Button>(R.id.btnBack).setOnClickListener {
             finish()
@@ -65,6 +74,8 @@ class ProductListActivity : AppCompatActivity() {
                 val port = prefs.getInt("ftpPort", 21)
                 val user = prefs.getString("ftpUser", "") ?: ""
                 val pass = prefs.getString("ftpPass", "") ?: ""
+                // Каталог імпорту на FTP, може бути порожнім
+                val importDir = prefs.getString("ftpImportDir", "") ?: ""
 
                 // Підключаємося до FTP-сервера за отриманими реквізитами
                 ftpClient.connect(InetAddress.getByName(host), port)
@@ -75,8 +86,8 @@ class ProductListActivity : AppCompatActivity() {
                     ftpClient.enterLocalPassiveMode()
                     ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE)
 
-                    // Витягаємо файл products.xml з кореня FTP
-                    val inputStream: InputStream = ftpClient.retrieveFileStream("/products.xml")
+                    // Витягаємо файл products.xml з налаштованої папки імпорту
+                    val inputStream: InputStream = ftpClient.retrieveFileStream(importDir + "/products.xml")
 
                     // Створюємо XML парсер для читання файлу
                     val factory = XmlPullParserFactory.newInstance()
@@ -124,6 +135,8 @@ class ProductListActivity : AppCompatActivity() {
 
                     // Повертаємося на головний потік, щоб оновити інтерфейс
                     runOnUiThread {
+                        // Масштаб шрифтів, заданий користувачем у налаштуваннях
+                        val scale = prefs.getInt("ui_font_scale", 100) / 100.0f
                         // Спочатку очищаємо таблицю від попередніх рядків
                         tableLayout.removeAllViews()
                         // Для кожного товару створюємо рядок і додаємо у таблицю
@@ -135,10 +148,17 @@ class ProductListActivity : AppCompatActivity() {
 
                             tvCode.text = c
                             tvName.text = n
+                            // Довгі назви переносимо на декілька рядків
+                            tvName.setSingleLine(false)
+                            tvName.setMaxLines(3)
+                            tvName.ellipsize = null
 
                             // Невеликий відступ для кращого вигляду
                             tvCode.setPadding(16, 16, 16, 16)
                             tvName.setPadding(16, 16, 16, 16)
+                            // Змінюємо розмір шрифту відповідно до зуму
+                            tvCode.textSize = tvCode.textSize * scale
+                            tvName.textSize = tvName.textSize * scale
 
                             row.addView(tvCode)
                             row.addView(tvName)
