@@ -18,6 +18,8 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".ui.orders.DriversActivity" />
         <activity android:name=".ui.orders.OrdersActivity" />
+        <activity android:name=".ui.orders.OrderDetailActivity" />
+        <activity android:name=".ui.orders.ScanActivity" />
         <!-- Активність зі списком товарів -->
         <activity android:name=".ProductListActivity" />
         <activity

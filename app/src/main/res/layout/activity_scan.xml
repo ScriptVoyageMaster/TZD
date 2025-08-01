@@ -1,0 +1,20 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <Button
+        android:id="@+id/btnSimulateScan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Сканувати (тест)" />
+
+    <TextView
+        android:id="@+id/txtScanResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Результат сканування"
+        android:paddingTop="16dp"/>
+</LinearLayout>
+

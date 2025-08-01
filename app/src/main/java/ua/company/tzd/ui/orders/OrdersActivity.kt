@@ -1,11 +1,8 @@
 package ua.company.tzd.ui.orders
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.content.Intent
 import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +32,11 @@ class OrdersActivity : AppCompatActivity() {
 
         val recycler = findViewById<RecyclerView>(R.id.recyclerViewOrders)
         recycler.layoutManager = LinearLayoutManager(this)
-        adapter = OrdersAdapter(orders)
+        adapter = OrdersAdapter(orders) { file ->
+            val intent = Intent(this, OrderDetailActivity::class.java)
+            intent.putExtra("orderFilePath", file.absolutePath)
+            startActivity(intent)
+        }
         recycler.adapter = adapter
 
         findViewById<Button>(R.id.btnBack).setOnClickListener { finish() }
@@ -82,24 +83,4 @@ class OrdersActivity : AppCompatActivity() {
         }
     }
 
-    /** Адаптер для відображення імен файлів замовлень */
-    private class OrdersAdapter(private val items: List<File>) :
-        RecyclerView.Adapter<OrdersAdapter.ViewHolder>() {
-
-        class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val text: TextView = view.findViewById(android.R.id.text1)
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context)
-                .inflate(android.R.layout.simple_list_item_1, parent, false)
-            return ViewHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.text.text = items[position].name
-        }
-
-        override fun getItemCount(): Int = items.size
-    }
 }
