@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -54,11 +55,11 @@ class DriversActivity : AppCompatActivity() {
         // Обробка жесту "потягни, щоб оновити"
         val swipeLayout = findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
         swipeLayout.setOnRefreshListener {
-            // Завантажуємо файли замовлень з FTP і після цього
-            // оновлюємо список водіїв та зупиняємо анімацію оновлення
-            downloadOrdersFromFtp {
+            // Завантажуємо файли замовлень з FTP
+            downloadOrdersFromFtp { count ->
                 loadDrivers()
                 swipeLayout.isRefreshing = false
+                Toast.makeText(this, "Синхронізовано $count замовлень", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -68,8 +69,9 @@ class DriversActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnRefresh).setOnClickListener {
             // Спочатку завантажуємо останні файли з FTP, а
             // коли операція завершиться, оновлюємо список
-            downloadOrdersFromFtp {
+            downloadOrdersFromFtp { count ->
                 loadDrivers()
+                Toast.makeText(this, "Синхронізовано $count замовлень", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -84,7 +86,7 @@ class DriversActivity : AppCompatActivity() {
      * підключення до FTP, копіювання файлів у директорію filesDir/orders
      * та по завершенню викликає передану функцію onComplete() на UI-потоці.
      */
-    private fun downloadOrdersFromFtp(onComplete: () -> Unit) {
+    private fun downloadOrdersFromFtp(onComplete: (Int) -> Unit) {
         Thread {
             // Зчитуємо налаштування FTP із спільних налаштувань програми
             val prefs = PreferenceManager.getDefaultSharedPreferences(this)
@@ -96,6 +98,7 @@ class DriversActivity : AppCompatActivity() {
             val processingDir = prefs.getString("ftp_processing_dir", "") ?: ""
 
             val ftpClient = FTPClient()
+            var synced = 0
             try {
                 // Підключаємося до вказаного FTP-сервера
                 ftpClient.connect(InetAddress.getByName(host), port)
@@ -116,6 +119,7 @@ class DriversActivity : AppCompatActivity() {
                             FileOutputStream(localFile).use { out ->
                                 ftpClient.retrieveFile("$importDir/${file.name}", out)
                             }
+                            synced++
                         }
                     }
 
@@ -130,31 +134,29 @@ class DriversActivity : AppCompatActivity() {
                             // Якщо файл вже містить тег блокування - пропускаємо його
                             if (text.contains("<блокування>")) continue
 
-                            // Додаємо локальний прапор <блокування/>
-                            val insertIndex = text.lastIndexOf("</")
-                            val updated = if (insertIndex != -1) {
-                                text.substring(0, insertIndex) + "<блокування/>" + text.substring(insertIndex)
-                            } else {
-                                text + "\n<блокування/>"
-                            }
-
                             val localFile = File(ordersDir, file.name)
-                            localFile.writeText(updated)
+                            localFile.writeText(text)
+                            synced++
                         }
                     }
 
                     ftpClient.logout()
                 }
             } catch (e: Exception) {
-                // У разі виникнення помилки просто виводимо її у консоль
+                // У разі виникнення помилки повідомляємо користувача
                 e.printStackTrace()
+                runOnUiThread {
+                    Toast.makeText(this, "Помилка при оновленні замовлень", Toast.LENGTH_LONG).show()
+                    onComplete(0)
+                }
+                return@Thread
             } finally {
                 try {
                     ftpClient.disconnect()
                 } catch (_: Exception) {
                 }
                 // Повертаємося на головний потік та викликаємо колбек
-                runOnUiThread { onComplete() }
+                runOnUiThread { onComplete(synced) }
             }
         }.start()
     }

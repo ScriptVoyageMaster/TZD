@@ -132,6 +132,7 @@ class SettingsActivity : AppCompatActivity() {
             val pass = ftpPass.text.toString().trim()
             val importDir = ftpImportDir.text.toString().trim()
             val exportDir = ftpExportDir.text.toString().trim()
+            val processingDir = ftpProcessingDir.text.toString().trim()
 
             // Запускаємо корутину в IO-потоці для роботи з мережею
             CoroutineScope(Dispatchers.IO).launch {
@@ -146,6 +147,7 @@ class SettingsActivity : AppCompatActivity() {
                         // Перевіряємо існування вказаних каталогів
                         val importExists = ftpClient.changeWorkingDirectory(importDir)
                         val exportExists = ftpClient.changeWorkingDirectory(exportDir)
+                        val processingExists = ftpClient.changeWorkingDirectory(processingDir)
 
                         // Повертаємося на головний потік для відображення результату
                         runOnUiThread {
@@ -163,6 +165,13 @@ class SettingsActivity : AppCompatActivity() {
                                         append("📂 Папка експорту існує\n")
                                     } else {
                                         append("❌ Папку експорту не знайдено\n")
+                                    }
+
+                                    append("📂 Папка обробки ")
+                                    if (processingExists) {
+                                        append("існує")
+                                    } else {
+                                        append("не знайдена")
                                     }
                                 }
 
