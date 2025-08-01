@@ -14,6 +14,7 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.File
 import java.io.FileOutputStream
+import java.io.InputStream
 import java.net.InetAddress
 
 /**
@@ -85,53 +86,57 @@ class ProductListActivity : AppCompatActivity() {
                     ftpClient.enterLocalPassiveMode()
                     ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE)
 
+
                     // Завантажуємо файл products.xml у локальну папку
                     val localFile = File(filesDir, "products.xml")
                     FileOutputStream(localFile).use { out ->
                         ftpClient.retrieveFile("$importDir/products.xml", out)
                     }
 
-                    // Створюємо XML парсер для читання файлу
-                    val factory = XmlPullParserFactory.newInstance()
-                    val parser = factory.newPullParser()
-                    parser.setInput(localFile.inputStream(), null)
-
                     // Список пар "код" - "назва" для кожного товару
                     val products = mutableListOf<Pair<String, String>>()
 
-                    var event = parser.eventType
-                    var code = ""
-                    var name = ""
+                    // Відкриваємо потік для читання завантаженого файлу
+                    localFile.inputStream().use { inputStream: InputStream ->
+                        // Створюємо XML парсер, що читатиме з цього потоку
+                        val factory = XmlPullParserFactory.newInstance()
+                        val parser = factory.newPullParser()
+                        parser.setInput(inputStream, null)
 
-                    // Читаємо XML доки не дійдемо до його кінця
-                    while (event != XmlPullParser.END_DOCUMENT) {
-                        val tag = parser.name
-                        when (event) {
-                            XmlPullParser.START_TAG -> {
-                                when (tag) {
-                                    // Початок елемента <product>
-                                    "product" -> {
-                                        code = ""
-                                        name = ""
+                        var event = parser.eventType
+                        var code = ""
+                        var name = ""
+
+                        // Читаємо XML доки не дійдемо до його кінця
+                        while (event != XmlPullParser.END_DOCUMENT) {
+                            val tag = parser.name
+                            when (event) {
+                                XmlPullParser.START_TAG -> {
+                                    when (tag) {
+                                        // Початок елемента <product>
+                                        "product" -> {
+                                            code = ""
+                                            name = ""
+                                        }
+                                        // Елемент <code>
+                                        "code" -> code = parser.nextText()
+                                        // Елемент <name>
+                                        "name" -> name = parser.nextText()
                                     }
-                                    // Елемент <code>
-                                    "code" -> code = parser.nextText()
-                                    // Елемент <name>
-                                    "name" -> name = parser.nextText()
+                                }
+                                XmlPullParser.END_TAG -> {
+                                    // Кінець елемента <product> - додаємо товар у список
+                                    if (tag == "product") {
+                                        products.add(Pair(code, name))
+                                    }
                                 }
                             }
-                            XmlPullParser.END_TAG -> {
-                                // Кінець елемента <product> - додаємо товар у список
-                                if (tag == "product") {
-                                    products.add(Pair(code, name))
-                                }
-                            }
+                            event = parser.next()
                         }
-                        event = parser.next()
                     }
 
-                    // Закриваємо потік та розриваємо з'єднання з сервером
-                    inputStream.close()
+                    // Після виходу з блоку use потік уже закритий,
+                    // тож лишається розірвати FTP-з'єднання
                     ftpClient.logout()
                     ftpClient.disconnect()
 
