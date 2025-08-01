@@ -6,7 +6,8 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingTop="24dp">
 
         <!-- Заголовок секції налаштувань сканера -->
         <TextView
@@ -178,6 +179,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Каталог експорту" />
+
+        <!-- Каталог для замовлень в обробці на сервері -->
+        <EditText
+            android:id="@+id/inputFtpProcessingDir"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Папка замовлень в обробці (processing)" />
 
         <!-- Заголовок секції "Масштаб" -->
         <TextView

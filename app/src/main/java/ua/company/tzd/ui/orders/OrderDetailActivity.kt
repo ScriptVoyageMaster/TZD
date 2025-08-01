@@ -3,6 +3,10 @@ package ua.company.tzd.ui.orders
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
+import org.apache.commons.net.ftp.FTPClient
+import java.net.InetAddress
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,10 +45,56 @@ class OrderDetailActivity : AppCompatActivity() {
         // Зчитуємо файл та заповнюємо список позицій
         loadOrder(orderFile)
 
-        // Тимчасово імітуємо сканування по натисканню кнопки
+        // При натисканні починаємо обробку замовлення та блокуємо його
         findViewById<Button>(R.id.btnStartScan).setOnClickListener {
-            // Тут мав би бути виклик реального сканера
-            parseBarcode("1234567890123")
+            // Отримуємо налаштування FTP та ім'я терміналу
+            val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+            val host = prefs.getString("ftpHost", "") ?: ""
+            val port = prefs.getInt("ftpPort", 21)
+            val user = prefs.getString("ftpUser", "") ?: ""
+            val pass = prefs.getString("ftpPass", "") ?: ""
+            val importDir = prefs.getString("ftp_import_dir", "") ?: ""
+            val processingDir = prefs.getString("ftp_processing_dir", "") ?: ""
+            val deviceName = prefs.getString("device_name", "device") ?: "device"
+
+            // Формуємо мітку блокування з поточною датою та часом
+            val time = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+
+            // Додаємо тег <блокування> всередину файлу замовлення
+            val original = orderFile.readText()
+            val idx = original.lastIndexOf("</")
+            val lockedText = if (idx != -1) {
+                original.substring(0, idx) + "<блокування>$deviceName,$time</блокування>" + original.substring(idx)
+            } else {
+                original + "\n<блокування>$deviceName,$time</блокування>"
+            }
+            orderFile.writeText(lockedText)
+
+            // В окремому потоці передаємо файл на FTP
+            Thread {
+                val ftp = FTPClient()
+                try {
+                    ftp.connect(InetAddress.getByName(host), port)
+                    if (ftp.login(user, pass)) {
+                        ftp.enterLocalPassiveMode()
+                        ftp.setFileType(FTPClient.BINARY_FILE_TYPE)
+
+                        // Завантажуємо файл у каталог processing
+                        orderFile.inputStream().use { inp ->
+                            ftp.storeFile("$processingDir/${orderFile.name}", inp)
+                        }
+                        // Видаляємо з каталогу import, якщо такий файл існує
+                        ftp.deleteFile("$importDir/${orderFile.name}")
+                        ftp.logout()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    try { ftp.disconnect() } catch (_: Exception) {}
+                }
+            }.start()
+
+            Toast.makeText(this, "Замовлення заблоковано", Toast.LENGTH_SHORT).show()
         }
     }
 

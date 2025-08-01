@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import java.io.File
+import android.graphics.Color
 
 /**
  * Адаптер для відображення списку файлів замовлень.
@@ -13,8 +13,8 @@ import java.io.File
  * @param onClick функція, яка буде викликана при натисканні на елемент
  */
 class OrdersAdapter(
-    private val orders: List<File>,
-    private val onClick: (File) -> Unit
+    private val orders: List<OrdersActivity.OrderInfo>,
+    private val onClick: (OrdersActivity.OrderInfo) -> Unit
 ) : RecyclerView.Adapter<OrdersAdapter.ViewHolder>() {
 
     /**
@@ -32,12 +32,17 @@ class OrdersAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        // Заповнюємо текст назвою файлу
-        holder.text.text = orders[position].name
-        // Обробник натискання передає вибраний файл зовнішній функції
-        holder.itemView.setOnClickListener {
-            onClick(orders[position])
+        val info = orders[position]
+        // Відображаємо назву файлу
+        holder.text.text = info.file.name
+        // Колір фону в залежності від прапора блокування
+        if (info.isLocked) {
+            holder.itemView.setBackgroundColor(Color.YELLOW)
+        } else {
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT)
         }
+        // Передаємо натискання разом з даними про файл
+        holder.itemView.setOnClickListener { onClick(info) }
     }
 
     override fun getItemCount(): Int = orders.size

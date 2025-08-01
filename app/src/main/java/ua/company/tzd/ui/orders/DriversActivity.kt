@@ -14,6 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.preference.PreferenceManager
 import org.apache.commons.net.ftp.FTPClient
 import java.io.FileOutputStream
+import java.io.ByteArrayOutputStream
 import java.net.InetAddress
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
@@ -92,6 +93,7 @@ class DriversActivity : AppCompatActivity() {
             val user = prefs.getString("ftpUser", "") ?: ""
             val pass = prefs.getString("ftpPass", "") ?: ""
             val importDir = prefs.getString("ftp_import_dir", "") ?: ""
+            val processingDir = prefs.getString("ftp_processing_dir", "") ?: ""
 
             val ftpClient = FTPClient()
             try {
@@ -106,14 +108,38 @@ class DriversActivity : AppCompatActivity() {
                     val ordersDir = File(filesDir, "orders")
                     if (!ordersDir.exists()) ordersDir.mkdirs()
 
-                    // Проходимося по всіх файлах у віддаленій теці
-                    val files = ftpClient.listFiles(importDir)
-                    for (file in files) {
+                    // Спершу завантажуємо файли з папки імпорту
+                    val importFiles = ftpClient.listFiles(importDir)
+                    for (file in importFiles) {
                         if (file.name.endsWith(".xml")) {
                             val localFile = File(ordersDir, file.name)
-                            val output = FileOutputStream(localFile)
-                            ftpClient.retrieveFile("$importDir/${file.name}", output)
-                            output.close()
+                            FileOutputStream(localFile).use { out ->
+                                ftpClient.retrieveFile("$importDir/${file.name}", out)
+                            }
+                        }
+                    }
+
+                    // Далі опрацьовуємо файли з каталогу processing
+                    val procFiles = ftpClient.listFiles(processingDir)
+                    for (file in procFiles) {
+                        if (file.name.endsWith(".xml")) {
+                            val baos = ByteArrayOutputStream()
+                            ftpClient.retrieveFile("$processingDir/${file.name}", baos)
+                            val text = baos.toString("UTF-8")
+                            baos.close()
+                            // Якщо файл вже містить тег блокування - пропускаємо його
+                            if (text.contains("<блокування>")) continue
+
+                            // Додаємо локальний прапор <блокування/>
+                            val insertIndex = text.lastIndexOf("</")
+                            val updated = if (insertIndex != -1) {
+                                text.substring(0, insertIndex) + "<блокування/>" + text.substring(insertIndex)
+                            } else {
+                                text + "\n<блокування/>"
+                            }
+
+                            val localFile = File(ordersDir, file.name)
+                            localFile.writeText(updated)
                         }
                     }
 
