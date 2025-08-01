@@ -11,6 +11,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.preference.PreferenceManager
+import org.apache.commons.net.ftp.FTPClient
+import java.io.FileOutputStream
+import java.net.InetAddress
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import ua.company.tzd.R
@@ -49,17 +53,84 @@ class DriversActivity : AppCompatActivity() {
         // Обробка жесту "потягни, щоб оновити"
         val swipeLayout = findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
         swipeLayout.setOnRefreshListener {
-            loadDrivers()
-            swipeLayout.isRefreshing = false
+            // Завантажуємо файли замовлень з FTP і після цього
+            // оновлюємо список водіїв та зупиняємо анімацію оновлення
+            downloadOrdersFromFtp {
+                loadDrivers()
+                swipeLayout.isRefreshing = false
+            }
         }
 
         // Кнопка повернення на попередній екран
         findViewById<Button>(R.id.btnBack).setOnClickListener { finish() }
         // Кнопка примусового перезавантаження списку
-        findViewById<Button>(R.id.btnRefresh).setOnClickListener { loadDrivers() }
+        findViewById<Button>(R.id.btnRefresh).setOnClickListener {
+            // Спочатку завантажуємо останні файли з FTP, а
+            // коли операція завершиться, оновлюємо список
+            downloadOrdersFromFtp {
+                loadDrivers()
+            }
+        }
 
         // Вперше завантажуємо дані при створенні активності
         loadDrivers()
+    }
+
+    /**
+     * Завантажуємо всі файли замовлень з FTP-сервера у локальну папку.
+     *
+     * Ця функція запускає окремий потік, у якому відбувається
+     * підключення до FTP, копіювання файлів у директорію filesDir/orders
+     * та по завершенню викликає передану функцію onComplete() на UI-потоці.
+     */
+    private fun downloadOrdersFromFtp(onComplete: () -> Unit) {
+        Thread {
+            // Зчитуємо налаштування FTP із спільних налаштувань програми
+            val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+            val host = prefs.getString("ftpHost", "") ?: ""
+            val port = prefs.getInt("ftpPort", 21)
+            val user = prefs.getString("ftpUser", "") ?: ""
+            val pass = prefs.getString("ftpPass", "") ?: ""
+            val importDir = prefs.getString("ftp_import_dir", "") ?: ""
+
+            val ftpClient = FTPClient()
+            try {
+                // Підключаємося до вказаного FTP-сервера
+                ftpClient.connect(InetAddress.getByName(host), port)
+                if (ftpClient.login(user, pass)) {
+                    // Встановлюємо пасивний режим та двійковий тип передачі
+                    ftpClient.enterLocalPassiveMode()
+                    ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE)
+
+                    // Папка, куди будемо зберігати завантажені файли
+                    val ordersDir = File(filesDir, "orders")
+                    if (!ordersDir.exists()) ordersDir.mkdirs()
+
+                    // Проходимося по всіх файлах у віддаленій теці
+                    val files = ftpClient.listFiles(importDir)
+                    for (file in files) {
+                        if (file.name.endsWith(".xml")) {
+                            val localFile = File(ordersDir, file.name)
+                            val output = FileOutputStream(localFile)
+                            ftpClient.retrieveFile("$importDir/${file.name}", output)
+                            output.close()
+                        }
+                    }
+
+                    ftpClient.logout()
+                }
+            } catch (e: Exception) {
+                // У разі виникнення помилки просто виводимо її у консоль
+                e.printStackTrace()
+            } finally {
+                try {
+                    ftpClient.disconnect()
+                } catch (_: Exception) {
+                }
+                // Повертаємося на головний потік та викликаємо колбек
+                runOnUiThread { onComplete() }
+            }
+        }.start()
     }
 
     /**
