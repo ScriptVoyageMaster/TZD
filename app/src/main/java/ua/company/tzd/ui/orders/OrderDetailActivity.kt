@@ -3,6 +3,7 @@ package ua.company.tzd.ui.orders
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
+import android.widget.TextView
 import org.apache.commons.net.ftp.FTPClient
 import java.net.InetAddress
 import java.time.LocalDateTime
@@ -15,6 +16,7 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import ua.company.tzd.R
 import java.io.File
+import android.view.View
 
 /**
  * Екран деталізації замовлення.
@@ -24,6 +26,9 @@ class OrderDetailActivity : AppCompatActivity() {
 
     /** Список позицій, зчитаних з файлу замовлення */
     private val items = mutableListOf<OrderItem>()
+
+    /** Мапа код -> назва товару, зчитана з файлу products.xml */
+    private val productNames = mutableMapOf<String, String>()
 
     /** Адаптер для RecyclerView */
     private lateinit var adapter: OrderItemAdapter
@@ -38,6 +43,9 @@ class OrderDetailActivity : AppCompatActivity() {
         adapter = OrderItemAdapter(items)
         recycler.adapter = adapter
 
+        // Спершу завантажуємо файл products.xml, щоб мати назви товарів
+        loadProducts()
+
         // Отримуємо шлях до файлу замовлення з Intent
         val path = intent.getStringExtra("orderFilePath") ?: return
         val orderFile = File(path)
@@ -45,8 +53,13 @@ class OrderDetailActivity : AppCompatActivity() {
         // Зчитуємо файл та заповнюємо список позицій
         loadOrder(orderFile)
 
+        // Кнопка "Назад" просто закриває поточний екран
+        findViewById<Button>(R.id.btnBack).setOnClickListener { finish() }
+
         // При натисканні починаємо обробку замовлення та блокуємо його
         findViewById<Button>(R.id.btnStartScan).setOnClickListener {
+            // Показуємо індикатор активного сканування
+            findViewById<TextView>(R.id.scanStatus).visibility = View.VISIBLE
             // Отримуємо налаштування FTP та ім'я терміналу
             val prefs = PreferenceManager.getDefaultSharedPreferences(this)
             val host = prefs.getString("ftpHost", "") ?: ""
@@ -122,14 +135,15 @@ class OrderDetailActivity : AppCompatActivity() {
                         }
                         // Код товару
                         "код" -> code = parser.nextText()
-                        // Назва товару
+                        // Назва товару може бути у файлі, але беремо її з мапи продуктів
                         "назва" -> name = parser.nextText()
                         // Замовлена вага
                         "вага" -> weight = parser.nextText().toDoubleOrNull() ?: 0.0
                     }
                     XmlPullParser.END_TAG -> if (parser.name == "позиція") {
                         // Кінець позиції – додаємо її у список
-                        items.add(OrderItem(code, name, weight))
+                        val finalName = productNames[code] ?: if (name.isNotEmpty()) name else "???"
+                        items.add(OrderItem(code, finalName, weight))
                     }
                 }
                 event = parser.next()
@@ -169,8 +183,42 @@ class OrderDetailActivity : AppCompatActivity() {
                 item.actualPacks += packs
                 adapter.notifyDataSetChanged()
             }
+            // Сховати індикатор, якщо обробка завершена
+            findViewById<TextView>(R.id.scanStatus).visibility = View.GONE
         } catch (e: Exception) {
             Toast.makeText(this, "Неможливо розпізнати штрихкод", Toast.LENGTH_SHORT).show()
+            findViewById<TextView>(R.id.scanStatus).visibility = View.GONE
+        }
+    }
+
+    /**
+     * Зчитує локальний файл products.xml і заповнює мапу productNames.
+     */
+    private fun loadProducts() {
+        val file = File(filesDir, "products.xml")
+        if (!file.exists()) return
+        try {
+            val parser = XmlPullParserFactory.newInstance().newPullParser()
+            parser.setInput(file.inputStream(), null)
+
+            var event = parser.eventType
+            var code = ""
+            var name = ""
+            while (event != XmlPullParser.END_DOCUMENT) {
+                when (event) {
+                    XmlPullParser.START_TAG -> when (parser.name) {
+                        "product", "товар" -> { code = ""; name = "" }
+                        "code", "код" -> code = parser.nextText()
+                        "name", "назва" -> name = parser.nextText()
+                    }
+                    XmlPullParser.END_TAG -> if (parser.name == "product" || parser.name == "товар") {
+                        productNames[code] = name
+                    }
+                }
+                event = parser.next()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

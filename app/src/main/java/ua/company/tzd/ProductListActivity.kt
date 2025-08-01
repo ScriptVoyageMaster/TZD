@@ -12,7 +12,8 @@ import ua.company.tzd.utils.TextScaleHelper
 import org.apache.commons.net.ftp.FTPClient
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
-import java.io.InputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.net.InetAddress
 
 /**
@@ -84,13 +85,16 @@ class ProductListActivity : AppCompatActivity() {
                     ftpClient.enterLocalPassiveMode()
                     ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE)
 
-                    // Витягаємо файл products.xml з вказаної у налаштуваннях папки
-                    val inputStream: InputStream = ftpClient.retrieveFileStream(importDir + "/products.xml")
+                    // Завантажуємо файл products.xml у локальну папку
+                    val localFile = File(filesDir, "products.xml")
+                    FileOutputStream(localFile).use { out ->
+                        ftpClient.retrieveFile("$importDir/products.xml", out)
+                    }
 
                     // Створюємо XML парсер для читання файлу
                     val factory = XmlPullParserFactory.newInstance()
                     val parser = factory.newPullParser()
-                    parser.setInput(inputStream, null)
+                    parser.setInput(localFile.inputStream(), null)
 
                     // Список пар "код" - "назва" для кожного товару
                     val products = mutableListOf<Pair<String, String>>()

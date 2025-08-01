@@ -10,6 +10,7 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import ua.company.tzd.R
 import ua.company.tzd.utils.TextScaleHelper
+import ua.company.tzd.ui.orders.ParsedOrderInfo
 import java.io.File
 
 /**
@@ -17,11 +18,8 @@ import java.io.File
  */
 class OrdersActivity : AppCompatActivity() {
 
-    /** Дані про файл замовлення та його стан блокування */
-    data class OrderInfo(val file: File, val isLocked: Boolean)
-
-    /** Список замовлень з ознакою заблокованого */
-    private val orders = mutableListOf<OrderInfo>()
+    /** Список замовлень з короткою інформацією */
+    private val orders = mutableListOf<ParsedOrderInfo>()
     private lateinit var adapter: OrdersAdapter
     private lateinit var driverName: String
 
@@ -51,13 +49,13 @@ class OrdersActivity : AppCompatActivity() {
     /** Завантажуємо всі замовлення для переданого водія */
     private fun loadOrders() {
         val ordersDir = File(filesDir, "orders")
-        val list = mutableListOf<OrderInfo>()
+        val list = mutableListOf<ParsedOrderInfo>()
 
         if (ordersDir.exists()) {
             ordersDir.listFiles()?.forEach { file ->
                 if (file.extension == "xml" && parseDriverTag(file) == driverName) {
-                    val locked = hasLockTag(file)
-                    list.add(OrderInfo(file, locked))
+                    // Отримуємо коротку інформацію з файлу
+                    parseOrderInfo(file)?.let { info -> list.add(info) }
                 }
             }
         }
@@ -104,6 +102,40 @@ class OrdersActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
             false
+        }
+    }
+
+    /**
+     * Парсить файл замовлення та повертає стислий опис.
+     */
+    private fun parseOrderInfo(file: File): ParsedOrderInfo? {
+        return try {
+            val parser = XmlPullParserFactory.newInstance().newPullParser()
+            parser.setInput(file.inputStream(), null)
+
+            var number = ""
+            var date = ""
+            var client = ""
+            var totalWeight = 0.0
+            var locked = false
+
+            var event = parser.eventType
+            while (event != XmlPullParser.END_DOCUMENT) {
+                if (event == XmlPullParser.START_TAG) {
+                    when (parser.name) {
+                        "номер" -> number = parser.nextText()
+                        "дата" -> date = parser.nextText()
+                        "клієнт" -> client = parser.nextText()
+                        "вага" -> totalWeight += parser.nextText().toDoubleOrNull() ?: 0.0
+                        "блокування" -> locked = true
+                    }
+                }
+                event = parser.next()
+            }
+            ParsedOrderInfo(number, date, client, totalWeight, locked, file)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 

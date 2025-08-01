@@ -5,15 +5,43 @@
     android:padding="8dp"
     android:paddingTop="24dp">
 
+    <TextView
+        android:id="@+id/scanStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Активне сканування"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:padding="8dp"
+        android:background="#FFEB3B"
+        android:visibility="gone"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerOrderItems"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:paddingTop="16dp"/>
 
-    <Button
-        android:id="@+id/btnStartScan"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Сканувати" />
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Назад"/>
+
+        <Button
+            android:id="@+id/btnStartScan"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Сканувати"/>
+    </LinearLayout>
 </LinearLayout>
