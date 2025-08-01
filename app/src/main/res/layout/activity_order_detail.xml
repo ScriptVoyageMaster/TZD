@@ -2,19 +2,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="8dp">
 
-    <TextView
-        android:id="@+id/txtOrderInfo"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerOrderItems"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="Інформація про замовлення" />
+        android:layout_weight="1"/>
 
     <Button
         android:id="@+id/btnStartScan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Почати сканування" />
+        android:text="Сканувати" />
 </LinearLayout>
-
