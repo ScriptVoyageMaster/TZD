@@ -46,9 +46,10 @@ class SettingsActivity : AppCompatActivity() {
         val ftpPort = findViewById<EditText>(R.id.inputFtpPort)
         val ftpUser = findViewById<EditText>(R.id.inputFtpUser)
         val ftpPass = findViewById<EditText>(R.id.inputFtpPass)
-        // Нові поля з папками імпорту та експорту на FTP-сервері
+        // Нові поля з папками імпорту, експорту та обробки на FTP-сервері
         val ftpImportDir = findViewById<EditText>(R.id.inputFtpImportDir)
         val ftpExportDir = findViewById<EditText>(R.id.inputFtpExportDir)
+        val ftpProcessingDir = findViewById<EditText>(R.id.inputFtpProcessingDir)
 
         // Поля масштабування тексту та кнопок
         val inputTextZoom = findViewById<EditText>(R.id.inputTextZoomPercent)
@@ -90,6 +91,7 @@ class SettingsActivity : AppCompatActivity() {
         ftpPass.setText(prefs.getString("ftpPass", ""))
         ftpImportDir.setText(prefs.getString("ftp_import_dir", ""))
         ftpExportDir.setText(prefs.getString("ftp_export_dir", ""))
+        ftpProcessingDir.setText(prefs.getString("ftp_processing_dir", ""))
 
         // Значення масштабів, 100% за замовчуванням
         inputTextZoom.setText(prefs.getInt("textZoomPercent", 100).toString())
@@ -113,6 +115,7 @@ class SettingsActivity : AppCompatActivity() {
                 putString("ftpPass", ftpPass.text.toString())
                 putString("ftp_import_dir", ftpImportDir.text.toString())
                 putString("ftp_export_dir", ftpExportDir.text.toString())
+                putString("ftp_processing_dir", ftpProcessingDir.text.toString())
                 putInt("textZoomPercent", inputTextZoom.text.toString().toInt())
                 putInt("buttonZoomPercent", inputButtonZoom.text.toString().toInt())
                 apply()
