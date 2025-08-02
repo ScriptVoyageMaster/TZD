@@ -24,8 +24,11 @@ import android.view.View
  */
 class OrderDetailActivity : AppCompatActivity() {
 
-    /** Список позицій, зчитаних з файлу замовлення */
-    private val items = mutableListOf<OrderItem>()
+    /**
+     * Список позицій для показу у RecyclerView.
+     * Використовуємо окремий клас [DisplayOrderItem], щоб не конфліктувати з основною моделлю [OrderItem].
+     */
+    private val items = mutableListOf<DisplayOrderItem>()
 
     /** Мапа код -> назва товару, зчитана з файлу products.xml */
     private val productNames = mutableMapOf<String, String>()
@@ -40,6 +43,7 @@ class OrderDetailActivity : AppCompatActivity() {
         // Налаштовуємо список позицій
         val recycler = findViewById<RecyclerView>(R.id.recyclerOrderItems)
         recycler.layoutManager = LinearLayoutManager(this)
+        // Створюємо адаптер і передаємо йому список позицій для відображення
         adapter = OrderItemAdapter(items)
         recycler.adapter = adapter
 
@@ -143,7 +147,8 @@ class OrderDetailActivity : AppCompatActivity() {
                     XmlPullParser.END_TAG -> if (parser.name == "позиція") {
                         // Кінець позиції – додаємо її у список
                         val finalName = productNames[code] ?: if (name.isNotEmpty()) name else "???"
-                        items.add(OrderItem(code, finalName, weight))
+                        // Додаємо у список новий елемент для відображення в таблиці
+                        items.add(DisplayOrderItem(code, finalName, weight))
                     }
                 }
                 event = parser.next()
