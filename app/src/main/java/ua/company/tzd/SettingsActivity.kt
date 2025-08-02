@@ -50,6 +50,10 @@ class SettingsActivity : AppCompatActivity() {
         val ftpImportDir = findViewById<EditText>(R.id.inputFtpImportDir)
         val ftpExportDir = findViewById<EditText>(R.id.inputFtpExportDir)
         val ftpProcessingDir = findViewById<EditText>(R.id.inputFtpProcessingDir)
+        // Інтервал між автоматичними збереженнями замовлення
+        val autosaveInterval = findViewById<EditText>(R.id.inputAutosaveInterval)
+        // Назва пристрою, що буде записуватися у тег <блокування>
+        val deviceName = findViewById<EditText>(R.id.inputDeviceName)
 
         // Поля масштабування тексту та кнопок
         val inputTextZoom = findViewById<EditText>(R.id.inputTextZoomPercent)
@@ -92,6 +96,8 @@ class SettingsActivity : AppCompatActivity() {
         ftpImportDir.setText(prefs.getString("ftp_import_dir", ""))
         ftpExportDir.setText(prefs.getString("ftp_export_dir", ""))
         ftpProcessingDir.setText(prefs.getString("ftp_processing_dir", ""))
+        autosaveInterval.setText(prefs.getInt("autosaveIntervalMinutes", 2).toString())
+        deviceName.setText(prefs.getString("deviceName", ""))
 
         // Значення масштабів, 100% за замовчуванням
         inputTextZoom.setText(prefs.getInt("textZoomPercent", 100).toString())
@@ -116,6 +122,8 @@ class SettingsActivity : AppCompatActivity() {
                 putString("ftp_import_dir", ftpImportDir.text.toString())
                 putString("ftp_export_dir", ftpExportDir.text.toString())
                 putString("ftp_processing_dir", ftpProcessingDir.text.toString())
+                putInt("autosaveIntervalMinutes", autosaveInterval.text.toString().toInt())
+                putString("deviceName", deviceName.text.toString())
                 putInt("textZoomPercent", inputTextZoom.text.toString().toInt())
                 putInt("buttonZoomPercent", inputButtonZoom.text.toString().toInt())
                 apply()
