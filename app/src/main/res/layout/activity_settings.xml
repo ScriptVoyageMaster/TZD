@@ -187,6 +187,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Папка замовлень в обробці (processing)" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Інтервал автозбереження (хв):" />
+        <EditText
+            android:id="@+id/inputAutosaveInterval"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="2" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Назва пристрою:" />
+        <EditText
+            android:id="@+id/inputDeviceName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Пристрій 1" />
+
 
         <!-- Заголовок секції "Масштаб" -->
         <TextView
