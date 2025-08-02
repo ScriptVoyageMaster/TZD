@@ -8,14 +8,16 @@ import androidx.recyclerview.widget.RecyclerView
 import ua.company.tzd.R
 
 /**
- * Дані однієї позиції замовлення.
- * @param code код товару
- * @param name назва товару
- * @param expectedWeight очікувана вага, яку має бути відвантажено
- * @param actualWeight фактична вага вже відсканованого товару
- * @param actualPacks фактична кількість упаковок
+ * Окремий рядок для відображення позиції замовлення у списку.
+ * Цей клас призначений виключно для показу інформації на екрані,
+ * щоб не плутати його з логічною моделлю [OrderItem] з файлу `Order.kt`.
+ * @param code код товару, зручний для швидкого пошуку по списку
+ * @param name читабельна назва товару, яку бачить користувач
+ * @param expectedWeight вага, яку система очікує відвантажити
+ * @param actualWeight поточна фактична вага вже відсканованого товару
+ * @param actualPacks фактична кількість упаковок, що вже відскановані
  */
-data class OrderItem(
+data class DisplayOrderItem(
     val code: String,
     val name: String,
     val expectedWeight: Double,
@@ -25,9 +27,9 @@ data class OrderItem(
 
 /**
  * Адаптер для таблиці позицій замовлення.
- * Показує код, назву, очікувану та фактичну вагу і кількість упаковок.
+ * Використовує [DisplayOrderItem], щоб відобразити код, назву та вагу товару.
  */
-class OrderItemAdapter(private val items: List<OrderItem>) :
+class OrderItemAdapter(private val items: List<DisplayOrderItem>) :
     RecyclerView.Adapter<OrderItemAdapter.ViewHolder>() {
 
     /** ViewHolder зберігає посилання на текстові поля одного рядка */

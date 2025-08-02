@@ -17,6 +17,7 @@ import org.xmlpull.v1.XmlPullParserFactory
 import ua.company.tzd.R
 import java.io.File
 import android.view.View
+import ua.company.tzd.ui.orders.DisplayOrderItem
 
 /**
  * Екран деталізації замовлення.
@@ -24,8 +25,12 @@ import android.view.View
  */
 class OrderDetailActivity : AppCompatActivity() {
 
-    /** Список позицій, зчитаних з файлу замовлення */
-    private val items = mutableListOf<OrderItem>()
+    /**
+     * Список позицій для відображення.
+     * Використовуємо [DisplayOrderItem], щоб показати дані на екрані
+     * та уникнути конфлікту з логічним класом [OrderItem] із `Order.kt`.
+     */
+    private val items = mutableListOf<DisplayOrderItem>()
 
     /** Мапа код -> назва товару, зчитана з файлу products.xml */
     private val productNames = mutableMapOf<String, String>()
@@ -141,9 +146,9 @@ class OrderDetailActivity : AppCompatActivity() {
                         "вага" -> weight = parser.nextText().toDoubleOrNull() ?: 0.0
                     }
                     XmlPullParser.END_TAG -> if (parser.name == "позиція") {
-                        // Кінець позиції – додаємо її у список
+                        // Кінець позиції – формуємо об'єкт для відображення і додаємо у список
                         val finalName = productNames[code] ?: if (name.isNotEmpty()) name else "???"
-                        items.add(OrderItem(code, finalName, weight))
+                        items.add(DisplayOrderItem(code, finalName, weight))
                     }
                 }
                 event = parser.next()
